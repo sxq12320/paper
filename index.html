@@ -131,8 +131,54 @@
     border-right: 1px solid var(--border);
     overflow-y: auto; z-index: 100;
     padding: 16px 0;
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
   }
+
+  /* Collapsed sidebar: icon-only mode */
+  #sidebar.collapsed {
+    width: 52px;
+    overflow: hidden;
+  }
+  #sidebar.collapsed .sidebar-section-title,
+  #sidebar.collapsed .sidebar-item span:not(.icon),
+  #sidebar.collapsed .sidebar-item .count {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.2s, width 0.3s;
+  }
+  #sidebar.collapsed .sidebar-item {
+    padding: 8px 0;
+    justify-content: center;
+    gap: 0;
+  }
+  #sidebar.collapsed .sidebar-divider { margin: 8px 8px; }
+
+  /* Sidebar hidden (non-papers/research pages) */
+  #sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  /* Sidebar toggle button */
+  #sidebar-toggle {
+    position: fixed;
+    top: 56px;
+    left: 218px;
+    z-index: 200;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    box-shadow: var(--shadow);
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+    color: var(--text2);
+  }
+  #sidebar-toggle:hover { background: var(--bg2); color: var(--text); }
+  #sidebar-toggle.hidden { opacity: 0; pointer-events: none; }
 
   .sidebar-section { margin-bottom: 4px; }
   .sidebar-section-title {
@@ -171,8 +217,10 @@
     margin-left: 230px; margin-top: 48px;
     min-height: calc(100vh - 48px);
     padding: 32px;
-    transition: margin-left 0.3s;
+    transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
   }
+  body.sidebar-collapsed #main { margin-left: 52px; }
+  body.sidebar-hidden #main { margin-left: 0; }
 
   /* ── PAGE HEADER ── */
   .page-header {
@@ -756,6 +804,159 @@
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 14px; }
 
+  /* ── WYSIWYG THOUGHT EDITOR ── */
+  .thought-full-modal {
+    display: flex; width: 100vw; height: 100vh;
+    background: white; overflow: hidden;
+  }
+
+  /* Left properties panel */
+  .thought-meta-panel {
+    width: 280px; min-width: 220px; max-width: 320px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 28px 20px 20px;
+    gap: 14px; overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .tmp-type-icon {
+    font-size: 36px; text-align: center; padding: 8px 0;
+  }
+  .tmp-title-input {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    border: none; outline: none; background: transparent;
+    width: 100%; resize: none;
+    font-family: inherit; line-height: 1.4;
+    padding: 4px 0;
+    border-bottom: 2px solid var(--border);
+  }
+  .tmp-title-input:focus { border-bottom-color: var(--accent); }
+  .tmp-prop { display: flex; flex-direction: column; gap: 4px; }
+  .tmp-prop-label {
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.07em;
+  }
+  .tmp-prop select, .tmp-prop input[type=number], .tmp-prop input[type=date] {
+    padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px;
+    font-family: inherit; color: var(--text); background: white;
+    outline: none; width: 100%; transition: var(--transition);
+  }
+  .tmp-prop select:focus, .tmp-prop input:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .tmp-prop input[type=text] {
+    padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px;
+    font-family: inherit; color: var(--text); background: white;
+    outline: none; width: 100%; transition: var(--transition);
+  }
+  .tmp-prop input[type=text]:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .tmp-prop-progress { display: flex; align-items: center; gap: 8px; }
+  .tmp-prop-progress input[type=range] { flex: 1; accent-color: var(--accent); }
+  .tmp-prop-progress span { font-size: 12px; font-weight: 600; color: var(--accent); min-width: 32px; }
+  .tmp-actions { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+  .tmp-btn {
+    padding: 9px 14px; border-radius: var(--radius); font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer; border: none; transition: var(--transition);
+    text-align: center;
+  }
+  .tmp-btn-primary { background: var(--accent); color: white; }
+  .tmp-btn-primary:hover { background: var(--accent2); }
+  .tmp-btn-ghost { background: var(--bg3); color: var(--text2); }
+  .tmp-btn-ghost:hover { background: var(--border2); }
+  .tmp-btn-danger { background: var(--red-bg); color: var(--red); }
+  .tmp-btn-danger:hover { background: #fbd0d3; }
+
+  /* Right editor panel */
+  .thought-editor-panel {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .editor-topbar {
+    height: 44px; padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: white; flex-shrink: 0;
+  }
+  .editor-topbar .editor-shortcuts {
+    font-size: 11px; color: var(--text3); flex: 1;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .editor-topbar .editor-shortcuts kbd {
+    display: inline-block; padding: 1px 5px; border-radius: 3px;
+    border: 1px solid var(--border2); background: var(--bg2);
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--text2); margin-left: 2px;
+  }
+  .editor-format-bar {
+    padding: 6px 20px; background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .efb-btn {
+    padding: 4px 8px; border-radius: 4px; border: none;
+    background: transparent; cursor: pointer; font-size: 13px;
+    color: var(--text2); transition: var(--transition);
+    font-family: inherit; line-height: 1.4;
+  }
+  .efb-btn:hover { background: var(--bg3); color: var(--text); }
+  .efb-btn.active { background: var(--accent-light); color: var(--accent); }
+  .efb-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+  .efb-select {
+    padding: 3px 6px; border: 1px solid var(--border);
+    border-radius: 4px; font-size: 12px; font-family: inherit;
+    background: white; color: var(--text); cursor: pointer; outline: none;
+  }
+
+  .wysiwyg-editor {
+    flex: 1; overflow-y: auto; padding: 40px 60px;
+    font-size: 15px; line-height: 1.8; color: var(--text);
+    outline: none; word-break: break-word;
+  }
+  .wysiwyg-editor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3); pointer-events: none;
+  }
+  .wysiwyg-editor h1 { font-size: 24px; font-weight: 800; margin: 24px 0 12px; }
+  .wysiwyg-editor h2 { font-size: 20px; font-weight: 700; margin: 20px 0 10px; }
+  .wysiwyg-editor h3 { font-size: 17px; font-weight: 700; margin: 16px 0 8px; }
+  .wysiwyg-editor p { margin: 0 0 8px; }
+  .wysiwyg-editor ul, .wysiwyg-editor ol { padding-left: 28px; margin: 8px 0; }
+  .wysiwyg-editor li { margin: 4px 0; }
+  .wysiwyg-editor blockquote {
+    border-left: 4px solid var(--accent); padding: 8px 16px;
+    margin: 12px 0; color: var(--text2); background: var(--accent-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .wysiwyg-editor pre, .wysiwyg-editor code {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    background: var(--bg3); padding: 2px 6px; border-radius: 4px;
+  }
+  .wysiwyg-editor pre { padding: 12px 16px; border-radius: var(--radius); overflow-x: auto; }
+  .wysiwyg-editor a { color: var(--accent); text-decoration: underline; }
+
+  /* Floating format toolbar */
+  #float-toolbar {
+    position: fixed; z-index: 9999;
+    background: #1e1e1e; border-radius: 6px;
+    padding: 4px 6px; display: none; gap: 2px; align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  #float-toolbar.visible { display: flex; opacity: 1; }
+  .ft-btn {
+    padding: 4px 8px; border: none; background: transparent;
+    color: #ddd; cursor: pointer; border-radius: 4px;
+    font-size: 13px; font-family: inherit; transition: background 0.15s;
+    line-height: 1.4;
+  }
+  .ft-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .ft-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px; }
+
   /* ── CONTEXT MENU ── */
   .ctx-menu {
     position: fixed; background: white; border: 1px solid var(--border);
@@ -820,6 +1021,8 @@
     .stats-row { grid-template-columns: repeat(2,1fr); }
     #papers-grid { grid-template-columns: 1fr; }
     .detail-meta-grid { grid-template-columns: repeat(2,1fr); }
+    #sidebar-toggle { display: none; }
+    body.sidebar-collapsed #main, body.sidebar-hidden #main { margin-left: 0; }
   }
   @media (max-width: 600px) {
     .stats-row { grid-template-columns: 1fr 1fr; }
@@ -932,6 +1135,9 @@
     <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
   </div>
 </div>
+
+<!-- SIDEBAR TOGGLE BUTTON -->
+<button id="sidebar-toggle" onclick="toggleSidebar()" title="折叠/展开侧边栏">◀</button>
 
 <!-- MAIN -->
 <div id="main">
@@ -1252,81 +1458,130 @@
 </div>
 
 <!-- THOUGHT MODAL -->
-<div class="modal-overlay" id="thought-modal">
-  <div class="modal" style="width:640px">
-    <div class="modal-header">
-      <h2 id="thought-modal-title">💡 添加研究思考</h2>
-      <button class="modal-close" onclick="closeModal('thought-modal')">✕</button>
+<div class="modal-overlay" id="thought-modal" style="align-items:stretch;padding:0">
+  <div class="thought-full-modal">
+    <!-- Left: Properties panel -->
+    <div class="thought-meta-panel">
+      <div class="tmp-type-icon" id="t-type-icon">💡</div>
+      <textarea class="tmp-title-input" id="t-title" rows="2" placeholder="思考标题…" oninput="updateTypeIcon()"></textarea>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">类型</div>
+        <select id="t-type" onchange="updateTypeIcon()">
+          <option value="idea">💡 研究想法</option>
+          <option value="direction">🧭 研究方向</option>
+          <option value="problem">❓ 待解决问题</option>
+          <option value="insight">✨ 洞察</option>
+          <option value="todo">📋 待阅读</option>
+          <option value="question">🔬 研究问题</option>
+          <option value="method">⚙️ 方法探索</option>
+        </select>
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">进度状态</div>
+        <select id="t-status">
+          <option value="active">🔵 进行中</option>
+          <option value="pending">⏳ 待启动</option>
+          <option value="done">✅ 已完成</option>
+          <option value="paused">⏸️ 暂停</option>
+        </select>
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">优先级</div>
+        <select id="t-priority">
+          <option value="">— 不设置 —</option>
+          <option value="easy-high">🌟 首选型（高创新·低难度）</option>
+          <option value="hard-high">🔴 挑战型（高创新·高难度）</option>
+          <option value="easy-low">🔵 备选型（低创新·低难度）</option>
+          <option value="hard-low">⚫ 避免型（低创新·高难度）</option>
+        </select>
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">完成进度</div>
+        <div class="tmp-prop-progress">
+          <input type="range" id="t-progress-range" min="0" max="100" value="0" oninput="document.getElementById('t-progress-val').textContent=this.value+'%';document.getElementById('t-progress').value=this.value">
+          <span id="t-progress-val">0%</span>
+        </div>
+        <input type="hidden" id="t-progress" value="0">
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">日期</div>
+        <input type="date" id="t-date">
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">关联论文</div>
+        <input type="text" id="t-papers" placeholder="SAM, DETR, ViT（逗号分隔）">
+      </div>
+
+      <div class="tmp-prop">
+        <div class="tmp-prop-label">下一步行动</div>
+        <input type="text" id="t-next" placeholder="最近要做的具体一步…">
+      </div>
+
+      <div class="tmp-actions">
+        <button class="tmp-btn tmp-btn-primary" onclick="saveThought()">💾 保存</button>
+        <button class="tmp-btn tmp-btn-ghost" onclick="closeModal('thought-modal')">取消</button>
+        <button class="tmp-btn tmp-btn-danger" id="t-delete-btn" onclick="deleteCurrentThought()" style="display:none">🗑️ 删除</button>
+      </div>
     </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">类型</label>
-          <select class="form-select" id="t-type">
-            <option value="idea">💡 研究想法</option>
-            <option value="direction">🧭 研究方向</option>
-            <option value="problem">❓ 待解决问题</option>
-            <option value="insight">✨ 洞察</option>
-            <option value="todo">📋 待阅读</option>
-            <option value="question">🔬 研究问题</option>
-            <option value="method">⚙️ 方法探索</option>
-          </select>
+
+    <!-- Right: Editor panel -->
+    <div class="thought-editor-panel">
+      <div class="editor-topbar">
+        <div class="editor-shortcuts">
+          <span>格式：<kbd>Ctrl+B</kbd> 加粗  <kbd>Ctrl+I</kbd> 斜体  <kbd>Ctrl+U</kbd> 下划线  <kbd>Ctrl+S</kbd> 保存</span>
         </div>
-        <div class="form-group">
-          <label class="form-label">标题</label>
-          <input class="form-input" id="t-title" placeholder="简短标题">
-        </div>
+        <button class="modal-close" onclick="closeModal('thought-modal')" style="flex-shrink:0">✕</button>
       </div>
-      <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">详细内容</label>
-          <textarea class="form-textarea" id="t-body" rows="5" placeholder="详细描述你的想法、思路、参考文献…"></textarea>
-        </div>
+      <div class="editor-format-bar">
+        <select class="efb-select" onchange="wysiwygBlock(this.value);this.value='p'" title="标题">
+          <option value="p">正文</option>
+          <option value="h1">H1</option>
+          <option value="h2">H2</option>
+          <option value="h3">H3</option>
+          <option value="pre">代码块</option>
+        </select>
+        <div class="efb-sep"></div>
+        <button class="efb-btn" onmousedown="event.preventDefault();wysiwyg('bold')" title="加粗"><b>B</b></button>
+        <button class="efb-btn" onmousedown="event.preventDefault();wysiwyg('italic')" title="斜体"><i>I</i></button>
+        <button class="efb-btn" onmousedown="event.preventDefault();wysiwyg('underline')" title="下划线"><u>U</u></button>
+        <button class="efb-btn" onmousedown="event.preventDefault();wysiwyg('strikeThrough')" title="删除线"><s>S</s></button>
+        <div class="efb-sep"></div>
+        <button class="efb-btn" onclick="wysiwyg('insertUnorderedList')" title="无序列表">≡</button>
+        <button class="efb-btn" onclick="wysiwyg('insertOrderedList')" title="有序列表">1.</button>
+        <button class="efb-btn" onclick="wysiwygBlock('blockquote')" title="引用">❝</button>
+        <div class="efb-sep"></div>
+        <button class="efb-btn" onclick="wysiwygLink()" title="链接">🔗</button>
+        <button class="efb-btn" onclick="wysiwyg('removeFormat')" title="清除格式">⊘</button>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">进度状态</label>
-          <select class="form-select" id="t-status">
-            <option value="active">🔵 进行中</option>
-            <option value="pending">⏳ 待启动</option>
-            <option value="done">✅ 已完成</option>
-            <option value="paused">⏸️ 暂停</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">优先级</label>
-          <select class="form-select" id="t-priority">
-            <option value="">— 不设置 —</option>
-            <option value="easy-high">🌟 首选型（高创新·低难度）</option>
-            <option value="hard-high">🔴 挑战型（高创新·高难度）</option>
-            <option value="easy-low">🔵 备选型（低创新·低难度）</option>
-            <option value="hard-low">⚫ 避免型（低创新·高难度）</option>
-          </select>
-        </div>
+      <div id="wysiwyg-editor" class="wysiwyg-editor"
+           contenteditable="true"
+           data-placeholder="开始写吧… 在这里记录你的研究思考、洞察和想法"
+           onkeydown="wysiwygKeydown(event)"
+           onmouseup="ftShow()"
+           onkeyup="ftShow()">
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">关联论文（标题关键词）</label>
-          <input class="form-input" id="t-papers" placeholder="如: SAM, DETR, ViT（逗号分隔）">
-        </div>
-        <div class="form-group">
-          <label class="form-label">完成进度 %</label>
-          <input class="form-input" id="t-progress" type="number" min="0" max="100" placeholder="0~100">
-        </div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">下一步行动</label>
-          <input class="form-input" id="t-next" placeholder="最近要做的具体一步行动…">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" id="t-delete-btn" onclick="deleteCurrentThought()" style="display:none;margin-right:auto">🗑️ 删除</button>
-      <button class="btn btn-ghost" onclick="closeModal('thought-modal')">取消</button>
-      <button class="btn btn-primary" onclick="saveThought()">💾 保存</button>
     </div>
   </div>
+</div>
+
+<!-- FLOATING FORMAT TOOLBAR -->
+<div class="float-toolbar" id="float-toolbar">
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('bold')"><b>B</b></button>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('italic')"><i>I</i></button>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('underline')"><u>U</u></button>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('strikeThrough')"><s>S</s></button>
+  <div class="ft-sep"></div>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwygBlock('h2')">H2</button>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwygBlock('blockquote')">❝</button>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('insertUnorderedList')">≡</button>
+  <div class="ft-sep"></div>
+  <button class="ft-btn" onmousedown="event.preventDefault();wysiwyg('removeFormat')">⊘</button>
 </div>
 
 <!-- CONTEXT MENU -->
@@ -1393,9 +1648,6 @@ let thoughtFilter = 'all';
 let currentResearchTab = 'board';
 
 async function loadData() {
-  // Load thoughts from localStorage
-  try { thoughts = JSON.parse(localStorage.getItem(THOUGHTS_KEY)) || []; } catch(e){ thoughts=[]; }
-
   // Load papers: try papers.json first, then localStorage, then sample
   try {
     const res = await fetch('data/papers.json');
@@ -1417,7 +1669,6 @@ async function loadData() {
       // Also include any papers added via UI that aren't in papers.json
       const jsonIds = new Set(jsonPapers.map(p=>p.id));
       localPapers.filter(p => !jsonIds.has(p.id)).forEach(p => papers.push(p));
-      toast('✅ 已从 data/papers.json 加载论文', 'success');
     } else {
       throw new Error('papers.json not found');
     }
@@ -1427,14 +1678,40 @@ async function loadData() {
     if (!papers.length) loadSampleData();
   }
 
-  if (!thoughts.length) {
-    // Load sample thoughts
-    thoughts = [
-      { id: uid(), type: 'direction', title: '研究方向初步锁定', body: '目前倾向于在「分割与生成的交叉领域」展开研究，具体考虑：\n1. 利用扩散模型的强大生成能力辅助实例分割（数据增强方向）\n2. SAM+CLIP的零样本分割提升\n3. 视频目标分割与跟踪的统一框架', status: 'active', priority: 'easy-high', progress: 40, relatedPapers: 'SAM, CLIP, DDPM', nextAction: '精读 SAM 论文附录，整理核心贡献', date: '2025-01-10' },
-      { id: uid(), type: 'problem', title: '小样本分割的核心瓶颈', body: '当前分割模型在少量样本下性能急剧下降。核心矛盾：\n- 泛化性 vs 特异性\n- 预训练知识利用 vs 过拟合新类别', status: 'active', priority: 'hard-high', progress: 20, relatedPapers: 'SAM, ViT', nextAction: '调研 few-shot segmentation survey 2024', date: '2025-01-12' },
-      { id: uid(), type: 'method', title: 'Prompt Tuning 在视觉分割中的应用', body: '受NLP中Prompt Tuning启发，考虑为SAM设计视觉提示生成器。', status: 'active', priority: 'easy-high', progress: 60, relatedPapers: 'SAM, CLIP, ViT', nextAction: '实现 prototype 版本，在 COCO 上验证', date: '2025-01-20' },
-    ];
-    saveData();
+  // Load thoughts: try thoughts.json first, then localStorage, then sample
+  try {
+    const tRes = await fetch('data/thoughts.json');
+    if (tRes.ok) {
+      const jsonThoughts = await tRes.json();
+      // Merge with localStorage overrides (user edits/additions)
+      let localThoughts = [];
+      try { localThoughts = JSON.parse(localStorage.getItem(THOUGHTS_KEY)) || []; } catch(e){}
+      const jsonIds = new Set(jsonThoughts.map(t=>t.id));
+      const localMap = {};
+      localThoughts.forEach(t => { localMap[t.id] = t; });
+      // JSON is source of truth; localStorage overrides user-editable fields
+      thoughts = jsonThoughts.map(t => {
+        const local = localMap[t.id];
+        if (!local) return t;
+        // Only override user-editable fields from localStorage
+        return { ...t, body: local.body ?? t.body, status: local.status ?? t.status, priority: local.priority ?? t.priority, progress: local.progress ?? t.progress, nextAction: local.nextAction ?? t.nextAction, relatedPapers: local.relatedPapers ?? t.relatedPapers };
+      });
+      // Include thoughts added via UI not in thoughts.json
+      localThoughts.filter(t => !jsonIds.has(t.id)).forEach(t => thoughts.unshift(t));
+    } else {
+      throw new Error('thoughts.json not found');
+    }
+  } catch(e) {
+    // Fallback: localStorage
+    try { thoughts = JSON.parse(localStorage.getItem(THOUGHTS_KEY)) || []; } catch(e2){ thoughts=[]; }
+    if (!thoughts.length) {
+      thoughts = [
+        { id: 'thought-001', type: 'direction', title: '研究方向初步锁定', body: '目前倾向于在「分割与生成的交叉领域」展开研究，具体考虑：\n1. 利用扩散模型的强大生成能力辅助实例分割（数据增强方向）\n2. SAM+CLIP的零样本分割提升\n3. 视频目标分割与跟踪的统一框架', status: 'active', priority: 'easy-high', progress: 40, relatedPapers: 'SAM, CLIP, DDPM', nextAction: '精读 SAM 论文附录，整理核心贡献', date: '2025-01-10' },
+        { id: 'thought-002', type: 'problem', title: '小样本分割的核心瓶颈', body: '当前分割模型在少量样本下性能急剧下降。核心矛盾：\n- 泛化性 vs 特异性\n- 预训练知识利用 vs 过拟合新类别', status: 'active', priority: 'hard-high', progress: 20, relatedPapers: 'SAM, ViT', nextAction: '调研 few-shot segmentation survey 2024', date: '2025-01-12' },
+        { id: 'thought-003', type: 'method', title: 'Prompt Tuning 在视觉分割中的应用', body: '受NLP中Prompt Tuning启发，考虑为SAM设计视觉提示生成器。', status: 'active', priority: 'easy-high', progress: 60, relatedPapers: 'SAM, CLIP, ViT', nextAction: '实现 prototype 版本，在 COCO 上验证', date: '2025-01-20' },
+      ];
+      saveData();
+    }
   }
 }
 
@@ -1611,7 +1888,7 @@ function renderThoughtBoard() {
           <button class="thought-card-menu" onclick="event.stopPropagation();deleteThought('${t.id}')" title="删除">✕</button>
         </div>
         <div class="thought-title">${t.title}</div>
-        <div class="thought-body">${t.body.replace(/\n/g,'<br>')}</div>
+        <div class="thought-body">${/<[a-z]/i.test(t.body||'') ? (t.body||'').replace(/<[^>]+>/g,' ').trim().slice(0,200) : (t.body||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').slice(0,400)}</div>
         ${prog > 0 ? `
         <div class="thought-progress-wrap">
           <div class="thought-progress-label"><span>进度</span><span>${prog}%</span></div>
@@ -1745,7 +2022,7 @@ function renderGoals() {
                 <span class="thought-priority-badge ${prio.cls||''}" style="font-size:10px">${prio.label||''}</span>
               </div>
             </div>
-            <div class="goal-body">${(t.body||'').split('\n')[0]}</div>
+            <div class="goal-body">${/<[a-z]/i.test(t.body||'') ? (t.body||'').replace(/<[^>]+>/g,' ').trim().split(/\s+/).slice(0,20).join(' ') : (t.body||'').split('\n')[0].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
             ${t.nextAction ? `<div class="goal-next"><strong>➤ 下一步：</strong>${t.nextAction}</div>` : ''}
             <div class="goal-meta">
               <span class="goal-meta-item">📅 ${t.date||'—'}</span>
@@ -1813,6 +2090,40 @@ function switchPage(name) {
     const el = document.getElementById('nav-'+n);
     if (el) el.classList.toggle('active', n===name);
   });
+  // Show sidebar only for papers and research pages
+  const hasSidebar = (name === 'papers' || name === 'research');
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  if (hasSidebar) {
+    sidebar.classList.remove('hidden');
+    toggleBtn.classList.remove('hidden');
+    document.body.classList.remove('sidebar-hidden');
+    if (sidebar.classList.contains('collapsed')) {
+      document.body.classList.add('sidebar-collapsed');
+    }
+    updateSidebarTogglePos();
+  } else {
+    sidebar.classList.add('hidden');
+    toggleBtn.classList.add('hidden');
+    document.body.classList.add('sidebar-hidden');
+    document.body.classList.remove('sidebar-collapsed');
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '▶' : '◀';
+  document.body.classList.toggle('sidebar-collapsed', collapsed);
+  updateSidebarTogglePos();
+}
+
+function updateSidebarTogglePos() {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  const w = sidebar.classList.contains('collapsed') ? 52 : 230;
+  btn.style.left = (w - 13) + 'px';
 }
 
 function setActiveNav(el) {
@@ -2034,42 +2345,130 @@ function editCurrentPaper() {
 // ═══════════════════════════════════════════════════════
 //  THOUGHT CRUD
 // ═══════════════════════════════════════════════════════
+// ── WYSIWYG Helpers ──
+const TYPE_ICONS = { idea:'💡', direction:'🧭', problem:'❓', insight:'✨', todo:'📋', question:'🔬', method:'⚙️' };
+
+function updateTypeIcon() {
+  const t = document.getElementById('t-type').value;
+  document.getElementById('t-type-icon').textContent = TYPE_ICONS[t] || '💡';
+}
+
+function wysiwyg(cmd, val) {
+  document.getElementById('wysiwyg-editor').focus();
+  document.execCommand(cmd, false, val || null);
+}
+
+function wysiwygBlock(tag) {
+  document.getElementById('wysiwyg-editor').focus();
+  document.execCommand('formatBlock', false, tag);
+}
+
+function wysiwygLink() {
+  const url = prompt('输入链接地址：');
+  if (url) wysiwyg('createLink', url);
+}
+
+function wysiwygKeydown(e) {
+  if ((e.ctrlKey || e.metaKey)) {
+    if (e.key === 'b') { e.preventDefault(); wysiwyg('bold'); }
+    else if (e.key === 'i') { e.preventDefault(); wysiwyg('italic'); }
+    else if (e.key === 'u') { e.preventDefault(); wysiwyg('underline'); }
+    else if (e.key === 's') { e.preventDefault(); saveThought(); }
+  }
+}
+
+function ftShow() {
+  const sel = window.getSelection();
+  const ft = document.getElementById('float-toolbar');
+  if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+    ft.classList.remove('visible');
+    return;
+  }
+  // Check selection is inside the editor
+  const editor = document.getElementById('wysiwyg-editor');
+  if (!editor || !editor.contains(sel.anchorNode)) {
+    ft.classList.remove('visible');
+    return;
+  }
+  const range = sel.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  ft.style.top = (rect.top + window.scrollY - 44) + 'px';
+  ft.style.left = Math.max(8, rect.left + window.scrollX + rect.width/2 - 80) + 'px';
+  ft.classList.add('visible');
+}
+
+// Hide float toolbar when clicking elsewhere
+document.addEventListener('mousedown', e => {
+  const ft = document.getElementById('float-toolbar');
+  if (ft && !ft.contains(e.target)) ft.classList.remove('visible');
+});
+
+function getEditorHtml() {
+  return document.getElementById('wysiwyg-editor').innerHTML;
+}
+
+function setEditorHtml(html) {
+  const ed = document.getElementById('wysiwyg-editor');
+  // Convert plain text newlines to HTML paragraphs if needed
+  if (html && !/<[a-z]/i.test(html)) {
+    const esc = s => s.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/&/g,'&amp;');
+    ed.innerHTML = html.split('\n').map(l => l ? `<p>${esc(l)}</p>` : '<p><br></p>').join('');
+  } else {
+    ed.innerHTML = html || '';
+  }
+}
+
+function getEditorText() {
+  const ed = document.getElementById('wysiwyg-editor');
+  return ed ? ed.innerText.trim() : '';
+}
+
 function openAddThought() {
   editingThoughtId = null;
-  document.getElementById('thought-modal-title').textContent = '💡 添加研究思考';
   document.getElementById('t-type').value = 'idea';
   document.getElementById('t-title').value = '';
-  document.getElementById('t-body').value = '';
+  setEditorHtml('');
   document.getElementById('t-status').value = 'active';
   document.getElementById('t-priority').value = '';
   document.getElementById('t-papers').value = '';
-  document.getElementById('t-progress').value = '';
+  document.getElementById('t-progress').value = '0';
+  document.getElementById('t-progress-range').value = '0';
+  document.getElementById('t-progress-val').textContent = '0%';
   document.getElementById('t-next').value = '';
+  document.getElementById('t-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('t-delete-btn').style.display = 'none';
+  updateTypeIcon();
   openModal('thought-modal');
+  setTimeout(() => document.getElementById('wysiwyg-editor').focus(), 100);
 }
 
 function openEditThought(id) {
   const t = thoughts.find(x=>x.id===id);
   if (!t) return;
   editingThoughtId = id;
-  document.getElementById('thought-modal-title').textContent = '✏️ 编辑思考';
   document.getElementById('t-type').value = t.type||'idea';
   document.getElementById('t-title').value = t.title||'';
-  document.getElementById('t-body').value = t.body||'';
+  setEditorHtml(t.body||'');
   document.getElementById('t-status').value = t.status||'active';
   document.getElementById('t-priority').value = t.priority||'';
   document.getElementById('t-papers').value = t.relatedPapers||'';
-  document.getElementById('t-progress').value = t.progress||'';
+  const prog = t.progress||0;
+  document.getElementById('t-progress').value = prog;
+  document.getElementById('t-progress-range').value = prog;
+  document.getElementById('t-progress-val').textContent = prog + '%';
   document.getElementById('t-next').value = t.nextAction||'';
+  document.getElementById('t-date').value = t.date||new Date().toISOString().slice(0,10);
   document.getElementById('t-delete-btn').style.display = 'block';
+  updateTypeIcon();
   openModal('thought-modal');
+  setTimeout(() => document.getElementById('wysiwyg-editor').focus(), 100);
 }
 
 function saveThought() {
   const title = document.getElementById('t-title').value.trim();
-  const body = document.getElementById('t-body').value.trim();
-  if (!title || !body) { toast('请填写标题和内容', 'error'); return; }
+  const body = getEditorHtml();
+  const bodyText = getEditorText();
+  if (!title || !bodyText) { toast('请填写标题和内容', 'error'); return; }
   const data = {
     type: document.getElementById('t-type').value,
     title, body,
@@ -2078,7 +2477,7 @@ function saveThought() {
     relatedPapers: document.getElementById('t-papers').value.trim(),
     progress: parseInt(document.getElementById('t-progress').value)||0,
     nextAction: document.getElementById('t-next').value.trim(),
-    date: new Date().toISOString().slice(0,10),
+    date: document.getElementById('t-date').value || new Date().toISOString().slice(0,10),
   };
   if (editingThoughtId) {
     const idx = thoughts.findIndex(t=>t.id===editingThoughtId);
@@ -2212,6 +2611,7 @@ document.addEventListener('keydown', e => {
 (async () => {
   await loadData();
   render();
+  updateSidebarTogglePos();
 })();
 </script>
 </body>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "thought-001",
+    "type": "direction",
+    "title": "研究方向初步锁定",
+    "body": "目前倾向于在「分割与生成的交叉领域」展开研究，具体考虑：\n1. 利用扩散模型的强大生成能力辅助实例分割（数据增强方向）\n2. SAM+CLIP的零样本分割提升\n3. 视频目标分割与跟踪的统一框架",
+    "status": "active",
+    "priority": "easy-high",
+    "progress": 40,
+    "relatedPapers": "SAM, CLIP, DDPM",
+    "nextAction": "精读 SAM 论文附录，整理核心贡献",
+    "date": "2025-01-10"
+  },
+  {
+    "id": "thought-002",
+    "type": "problem",
+    "title": "小样本分割的核心瓶颈",
+    "body": "当前分割模型在少量样本下性能急剧下降。核心矛盾：\n- 泛化性 vs 特异性\n- 预训练知识利用 vs 过拟合新类别",
+    "status": "active",
+    "priority": "hard-high",
+    "progress": 20,
+    "relatedPapers": "SAM, ViT",
+    "nextAction": "调研 few-shot segmentation survey 2024",
+    "date": "2025-01-12"
+  },
+  {
+    "id": "thought-003",
+    "type": "method",
+    "title": "Prompt Tuning 在视觉分割中的应用",
+    "body": "受NLP中Prompt Tuning启发，考虑为SAM设计视觉提示生成器。",
+    "status": "active",
+    "priority": "easy-high",
+    "progress": 60,
+    "relatedPapers": "SAM, CLIP, ViT",
+    "nextAction": "实现 prototype 版本，在 COCO 上验证",
+    "date": "2025-01-20"
+  }
+]
