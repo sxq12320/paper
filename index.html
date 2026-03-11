@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Hub · CV Papers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f5;
+    --bg3: #ebebeb;
+    --surface: #fafafa;
+    --border: #e0e0e0;
+    --border2: #d0d0d0;
+    --text: #1a1a1a;
+    --text2: #555;
+    --text3: #888;
+    --accent: #0078d4;
+    --accent2: #106ebe;
+    --accent-light: #e8f4fd;
+    --accent-glow: rgba(0,120,212,0.12);
+    --green: #107c10;
+    --green-bg: #e8f5e9;
+    --orange: #d83b01;
+    --orange-bg: #fff3e0;
+    --purple: #5c2d91;
+    --purple-bg: #f3e8ff;
+    --teal: #008272;
+    --teal-bg: #e0f5f5;
+    --red: #c50f1f;
+    --red-bg: #fde7e9;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow2: 0 8px 32px rgba(0,0,0,0.12);
+    --shadow3: 0 20px 60px rgba(0,0,0,0.16);
+    --radius: 8px;
+    --radius2: 12px;
+    --radius3: 20px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* ── TOPBAR ── */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 48px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 20px; gap: 20px;
+    transition: box-shadow 0.3s;
+  }
+  #topbar.scrolled { box-shadow: var(--shadow); }
+
+  .topbar-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 700; color: var(--text);
+    text-decoration: none; white-space: nowrap;
+  }
+  .topbar-logo .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); display: inline-block;
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .topbar-nav { display: flex; gap: 4px; }
+  .topbar-nav a {
+    padding: 4px 12px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    text-decoration: none; cursor: pointer;
+    transition: var(--transition);
+  }
+  .topbar-nav a:hover, .topbar-nav a.active {
+    background: var(--accent-light); color: var(--accent);
+  }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  .search-box {
+    position: relative; display: flex; align-items: center;
+  }
+  .search-box input {
+    width: 200px; padding: 5px 12px 5px 32px;
+    border: 1px solid var(--border); border-radius: 20px;
+    font-size: 13px; font-family: inherit; color: var(--text);
+    background: var(--bg2); outline: none;
+    transition: var(--transition);
+  }
+  .search-box input:focus {
+    width: 260px; border-color: var(--accent);
+    background: white; box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .search-box svg {
+    position: absolute; left: 10px; width: 14px; height: 14px;
+    stroke: var(--text3); pointer-events: none;
+  }
+
+  .btn-add {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 6px;
+    background: var(--accent); color: white;
+    font-size: 13px; font-weight: 600; font-family: inherit;
+    border: none; cursor: pointer; transition: var(--transition);
+    white-space: nowrap;
+  }
+  .btn-add:hover { background: var(--accent2); box-shadow: var(--shadow); transform: translateY(-1px); }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    position: fixed; left: 0; top: 48px; bottom: 0; width: 230px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 100;
+    padding: 16px 0;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .sidebar-section { margin-bottom: 4px; }
+  .sidebar-section-title {
+    padding: 6px 16px; font-size: 11px; font-weight: 700;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 16px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    border-radius: 0; transition: var(--transition);
+    position: relative; user-select: none;
+  }
+  .sidebar-item:hover { background: var(--bg3); color: var(--text); }
+  .sidebar-item.active {
+    background: var(--accent-light); color: var(--accent); font-weight: 600;
+  }
+  .sidebar-item.active::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+  }
+  .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+  .sidebar-item .count {
+    margin-left: auto; font-size: 11px; font-weight: 700;
+    background: var(--bg3); color: var(--text3);
+    padding: 1px 6px; border-radius: 10px;
+    transition: var(--transition);
+  }
+  .sidebar-item.active .count { background: var(--accent-glow); color: var(--accent); }
+
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    margin-left: 230px; margin-top: 48px;
+    min-height: calc(100vh - 48px);
+    padding: 32px;
+    transition: margin-left 0.3s;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .page-header h1 {
+    font-size: 28px; font-weight: 800; color: var(--text);
+    line-height: 1.2;
+  }
+  .page-header p {
+    font-size: 14px; color: var(--text3); margin-top: 6px;
+  }
+  .page-header .header-actions {
+    display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+
+  .filter-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .filter-tab {
+    padding: 5px 14px; border-radius: 20px;
+    border: 1px solid var(--border); background: white;
+    font-size: 12px; font-weight: 600; color: var(--text2);
+    cursor: pointer; transition: var(--transition);
+  }
+  .filter-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-tab.active {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+
+  .view-toggle {
+    margin-left: auto; display: flex; gap: 4px;
+    border: 1px solid var(--border); border-radius: 8px; padding: 3px;
+  }
+  .view-btn {
+    width: 30px; height: 26px; border-radius: 5px; border: none;
+    background: transparent; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: var(--transition);
+    color: var(--text3);
+  }
+  .view-btn.active { background: var(--accent); color: white; }
+  .view-btn:hover:not(.active) { background: var(--bg3); color: var(--text); }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 28px; animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .stat-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 16px 20px;
+    transition: var(--transition); cursor: default;
+  }
+  .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .stat-card .stat-label { font-size: 12px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-card .stat-num { font-size: 32px; font-weight: 800; color: var(--text); line-height: 1.1; margin: 4px 0; font-variant-numeric: tabular-nums; }
+  .stat-card .stat-sub { font-size: 12px; color: var(--text3); }
+  .stat-card .stat-bar { height: 3px; background: var(--bg3); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .stat-card .stat-bar-fill { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+
+  /* ── PAPER GRID ── */
+  #papers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+  #papers-grid.list-view {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── PAPER CARD ── */
+  .paper-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    animation: cardIn 0.4s cubic-bezier(0.4,0,0.2,1) both;
+  }
+  .paper-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--accent), #50a0ff);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .paper-card:hover {
+    border-color: var(--accent); box-shadow: var(--shadow2);
+    transform: translateY(-3px);
+  }
+  .paper-card:hover::before { transform: scaleX(1); }
+
+  .paper-card.list-view {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px 20px;
+  }
+  .paper-card.list-view .card-body { flex: 1; }
+
+  .card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .card-badges { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .badge-cat { background: var(--accent-light); color: var(--accent); }
+  .badge-cat.detection { background: var(--orange-bg); color: var(--orange); }
+  .badge-cat.segmentation { background: var(--green-bg); color: var(--green); }
+  .badge-cat.transformer { background: var(--purple-bg); color: var(--purple); }
+  .badge-cat.generation { background: #fff8e1; color: #f57c00; }
+  .badge-cat.tracking { background: var(--teal-bg); color: var(--teal); }
+  .badge-cat.classification { background: var(--red-bg); color: var(--red); }
+  .badge-cat.3d { background: #f3e5f5; color: #7b1fa2; }
+  .badge-cat.multimodal { background: #e8eaf6; color: #3949ab; }
+  .badge-year { background: var(--bg2); color: var(--text3); font-size: 11px; }
+  .badge-venue { background: var(--bg3); color: var(--text2); }
+  .badge-star { background: #fff8e1; color: #f9a825; }
+
+  .card-menu-btn {
+    width: 28px; height: 28px; border-radius: 6px; border: none;
+    background: transparent; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text3); flex-shrink: 0; transition: var(--transition);
+    font-size: 18px; line-height: 1;
+  }
+  .card-menu-btn:hover { background: var(--bg3); color: var(--text); }
+
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--text);
+    line-height: 1.5; margin-bottom: 8px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-authors {
+    font-size: 12px; color: var(--text3); margin-bottom: 8px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .card-abstract {
+    font-size: 12px; color: var(--text2); line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
+    gap: 8px;
+  }
+  .card-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .card-meta-item {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--text3);
+  }
+  .card-meta-item svg { width: 13px; height: 13px; stroke: currentColor; flex-shrink: 0; }
+  .card-actions { display: flex; gap: 4px; }
+  .card-action-btn {
+    width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+    background: white; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text3); transition: var(--transition); flex-shrink: 0;
+  }
+  .card-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .card-action-btn svg { width: 13px; height: 13px; stroke: currentColor; }
+
+  /* ── CATEGORY SECTION ── */
+  .category-section {
+    margin-bottom: 40px; animation: fadeUp 0.4s ease both;
+  }
+  .category-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .category-icon { font-size: 22px; }
+  .category-title { font-size: 18px; font-weight: 800; color: var(--text); }
+  .category-count {
+    background: var(--accent-light); color: var(--accent);
+    padding: 2px 10px; border-radius: 10px;
+    font-size: 12px; font-weight: 700; margin-left: auto;
+  }
+
+  /* ── RESEARCH BOARD RICH ── */
+  .rtab { animation: fadeUp 0.35s ease both; }
+
+  /* Stats strip */
+  .r-stats-strip {
+    display: grid; grid-template-columns: repeat(5,1fr); gap: 12px;
+    margin-bottom: 20px;
+  }
+  .r-stat {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 12px 16px;
+    text-align: center; transition: var(--transition); cursor: default;
+  }
+  .r-stat:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .r-stat .rs-num { font-size: 26px; font-weight: 800; line-height: 1; }
+  .r-stat .rs-label { font-size: 11px; color: var(--text3); margin-top: 4px; font-weight: 600; }
+
+  /* Filter chips */
+  .thought-filter-bar {
+    display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px;
+  }
+  .thought-filter-chip {
+    padding: 5px 13px; border-radius: 20px;
+    border: 1px solid var(--border); background: white;
+    font-size: 12px; font-weight: 600; color: var(--text2);
+    cursor: pointer; transition: var(--transition);
+  }
+  .thought-filter-chip:hover { border-color: var(--fc, var(--accent)); color: var(--fc, var(--accent)); }
+  .thought-filter-chip.active {
+    background: var(--fb, var(--accent-light));
+    color: var(--fc, var(--accent));
+    border-color: var(--fc, var(--accent));
+  }
+
+  /* Thought cards */
+  .thought-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .thought-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--radius2);
+    padding: 18px; cursor: pointer; transition: var(--transition);
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+    animation: cardIn 0.35s ease both;
+  }
+  .thought-card::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--tc, var(--accent)); border-radius: 2px 0 0 2px;
+  }
+  .thought-card:hover { box-shadow: var(--shadow2); transform: translateY(-3px); border-color: var(--tc, var(--accent)); }
+
+  .thought-card-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+  .thought-tag {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 3px 8px; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
+  }
+  .thought-status-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+  }
+  .thought-card-menu {
+    margin-left: auto; width: 26px; height: 26px; border-radius: 6px;
+    background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text3); opacity: 0; transition: var(--transition); font-size: 16px;
+  }
+  .thought-card:hover .thought-card-menu { opacity: 1; }
+  .thought-card-menu:hover { background: var(--bg3); color: var(--text); }
+
+  .thought-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; color: var(--text); }
+  .thought-body {
+    font-size: 13px; color: var(--text2); line-height: 1.7; flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .thought-progress-wrap { margin: 12px 0 6px; }
+  .thought-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 600; }
+  .thought-progress-bar { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .thought-progress-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+  .thought-next {
+    background: #fffde7; border: 1px solid #ffe082; border-radius: 6px;
+    padding: 7px 10px; font-size: 12px; color: #5d4037; margin: 8px 0;
+    display: flex; gap: 6px; align-items: flex-start;
+  }
+
+  .thought-related-papers {
+    display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0;
+  }
+  .thought-paper-chip {
+    background: var(--accent-light); color: var(--accent);
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+  }
+  .thought-paper-chip:hover { background: var(--accent); color: white; }
+
+  .thought-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);
+    gap: 8px;
+  }
+  .thought-date { font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+  .thought-priority-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  }
+
+  .add-thought-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: white; border: 2px dashed var(--border2);
+    border-radius: var(--radius2); padding: 32px; cursor: pointer;
+    color: var(--text3); font-size: 13px; font-weight: 600;
+    transition: var(--transition); flex-direction: column;
+  }
+  .add-thought-btn .plus-icon { font-size: 28px; line-height: 1; }
+  .add-thought-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* ── ROADMAP ── */
+  .roadmap-container {
+    position: relative;
+  }
+  .roadmap-phase {
+    display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start;
+    animation: fadeUp 0.4s ease both;
+  }
+  .roadmap-phase-label {
+    width: 90px; flex-shrink: 0; text-align: right;
+    padding-top: 14px;
+  }
+  .roadmap-phase-label .phase-title { font-size: 12px; font-weight: 800; color: var(--text2); }
+  .roadmap-phase-label .phase-sub { font-size: 11px; color: var(--text3); }
+
+  .roadmap-line-col { width: 32px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .roadmap-dot { width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px var(--accent); margin-top: 14px; z-index: 1; flex-shrink: 0; }
+  .roadmap-vline { width: 2px; flex: 1; min-height: 40px; margin-top: 4px; }
+
+  .roadmap-cards { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .roadmap-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--radius2);
+    padding: 14px 16px; transition: var(--transition); cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .roadmap-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .roadmap-card .rc-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-bottom: 7px; }
+  .roadmap-card .rc-title { font-size: 13px; font-weight: 700; line-height: 1.4; }
+  .roadmap-card .rc-prog { margin-top: 8px; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .roadmap-card .rc-prog-fill { height: 100%; border-radius: 2px; }
+  .roadmap-card .rc-status { font-size: 10px; color: var(--text3); margin-top: 6px; }
+
+  .roadmap-empty { padding: 20px; text-align: center; color: var(--text3); font-size: 13px; }
+
+  /* ── PRIORITY MATRIX ── */
+  .matrix-wrap { }
+  .matrix-title-row { display: grid; grid-template-columns: 50px 1fr 1fr 50px; gap: 8px; text-align: center; }
+  .matrix-axis-label { font-size: 12px; font-weight: 700; color: var(--green); padding: 6px 0; }
+  .matrix-grid { display: grid; grid-template-columns: 50px 1fr 1fr 50px; grid-template-rows: 1fr 1fr; gap: 8px; min-height: 380px; }
+  .matrix-axis-label-v {
+    font-size: 11px; font-weight: 700; color: var(--orange);
+    writing-mode: vertical-rl; text-align: center; display: flex; align-items: center; justify-content: center;
+  }
+  .matrix-quadrant {
+    border: 1px solid var(--border); border-radius: var(--radius2);
+    padding: 14px; position: relative; transition: var(--transition);
+  }
+  .matrix-quadrant:hover { box-shadow: var(--shadow); }
+  .mq-label { font-size: 12px; font-weight: 800; margin-bottom: 12px; color: var(--text2); line-height: 1.5; }
+  .mq-label small { font-weight: 500; font-size: 10px; color: var(--text3); display: block; }
+  .mq-items { display: flex; flex-direction: column; gap: 6px; }
+  .mq-item {
+    background: white; border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: var(--transition); display: flex; align-items: center; gap: 6px;
+  }
+  .mq-item:hover { box-shadow: var(--shadow); transform: translateX(2px); }
+
+  /* ── GOALS ── */
+  .goals-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .goal-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--radius2);
+    padding: 18px; transition: var(--transition); cursor: pointer;
+    animation: cardIn 0.35s ease both;
+  }
+  .goal-card:hover { box-shadow: var(--shadow2); transform: translateY(-2px); }
+  .goal-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .goal-circle {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; position: relative;
+  }
+  .goal-circle svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .goal-circle .gc-num { position: relative; z-index: 1; font-size: 11px; font-weight: 800; }
+  .goal-title { font-size: 14px; font-weight: 800; flex: 1; }
+  .goal-body { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .goal-next { background: var(--bg2); border-radius: 6px; padding: 8px 10px; font-size: 12px; color: var(--text2); }
+  .goal-next strong { color: var(--accent); }
+  .goal-meta { display: flex; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .goal-meta-item { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+
+  /* Status colors */
+  .status-active { background: var(--accent-light); color: var(--accent); }
+  .status-pending { background: #fff3e0; color: #d83b01; }
+  .status-done { background: var(--green-bg); color: var(--green); }
+  .status-paused { background: var(--bg3); color: var(--text3); }
+
+  .priority-easy-high { background: #e8f5e9; color: #107c10; }
+  .priority-hard-high { background: #fff3e0; color: #d83b01; }
+  .priority-easy-low { background: #e8f4fd; color: #0078d4; }
+  .priority-hard-low { background: #f5f5f5; color: #555; }
+
+  /* ── PDF READER MODAL ── */
+  .detail-full-modal {
+    display: flex; width: 100vw; height: 100vh;
+    background: white; overflow: hidden;
+    transform: translateY(8px); opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+  }
+  .modal-overlay.open .detail-full-modal {
+    transform: translateY(0); opacity: 1;
+  }
+
+  /* LEFT meta panel */
+  .detail-left {
+    width: 360px; min-width: 320px; max-width: 420px;
+    flex-shrink: 0; display: flex; flex-direction: column;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .detail-left-header {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 16px 18px; border-bottom: 1px solid var(--border);
+    background: white; flex-shrink: 0;
+  }
+  .detail-left-body {
+    flex: 1; overflow-y: auto; padding: 16px 18px;
+  }
+
+  /* RIGHT pdf panel */
+  .detail-right {
+    flex: 1; display: flex; flex-direction: column;
+    background: #f0f0f0; overflow: hidden;
+  }
+  .pdf-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; background: white;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+    height: 42px;
+  }
+  .pdf-tb-btn {
+    width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+    background: white; cursor: pointer; font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text2); transition: var(--transition); flex-shrink: 0;
+    font-family: inherit;
+  }
+  .pdf-tb-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  .pdf-viewer-wrap {
+    flex: 1; overflow: hidden; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pdf-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; color: var(--text3); padding: 40px;
+  }
+  #pdf-iframe { transition: opacity 0.3s; }
+
+  /* PDF badge on card */
+  .badge-pdf {
+    background: #fff3e0; color: #d83b01;
+    cursor: pointer; transition: var(--transition);
+  }
+  .badge-pdf:hover { background: #d83b01; color: white; }
+
+  /* Detail sections (reused in left panel) */
+  .detail-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .detail-section { margin-bottom: 16px; }
+  .detail-section h4 {
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  .detail-section p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .detail-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .detail-meta-item { background: var(--bg2); border-radius: var(--radius); padding: 9px 11px; }
+  .detail-meta-item .dm-label { font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .detail-meta-item .dm-val { font-size: 12px; font-weight: 600; color: var(--text); }
+  .detail-notes {
+    background: #fffde7; border: 1px solid #ffe082;
+    border-radius: var(--radius); padding: 12px;
+    font-size: 12px; color: #5d4037; line-height: 1.7; white-space: pre-wrap;
+  }
+  .detail-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 12px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: white;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+    text-decoration: none; transition: var(--transition);
+  }
+  .detail-link:hover { background: var(--accent-light); border-color: var(--accent); }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: white; border-radius: var(--radius2);
+    width: 680px; max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 60px); overflow-y: auto;
+    box-shadow: var(--shadow3);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .modal-header h2 { font-size: 17px; font-weight: 800; flex: 1; }
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 6px; border: none;
+    background: var(--bg2); cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text3); transition: var(--transition);
+  }
+  .modal-close:hover { background: #fde7e9; color: var(--red); }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label {
+    font-size: 12px; font-weight: 700; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .form-input, .form-select, .form-textarea {
+    padding: 8px 12px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px; font-family: inherit;
+    color: var(--text); background: white; outline: none;
+    transition: var(--transition);
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .form-select { cursor: pointer; }
+
+  .btn { padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: var(--transition); border: 1px solid transparent; }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent2); box-shadow: var(--shadow); }
+  .btn-ghost { background: transparent; color: var(--text2); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--bg2); }
+  .btn-danger { background: var(--red-bg); color: var(--red); border-color: transparent; }
+  .btn-danger:hover { background: #fbd0d3; }
+
+  /* ── PAPER DETAIL MODAL ── */
+  .detail-modal { width: 780px; }
+  .detail-badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h4 { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .detail-section p { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .detail-meta-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .detail-meta-item { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
+  .detail-meta-item .dm-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .detail-meta-item .dm-val { font-size: 13px; font-weight: 600; color: var(--text); }
+  .detail-notes {
+    background: #fffde7; border: 1px solid #ffe082;
+    border-radius: var(--radius); padding: 14px;
+    font-size: 13px; color: #5d4037; line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .detail-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: white;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+    text-decoration: none; transition: var(--transition);
+  }
+  .detail-link:hover { background: var(--accent-light); border-color: var(--accent); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── CONTEXT MENU ── */
+  .ctx-menu {
+    position: fixed; background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow2);
+    padding: 4px 0; z-index: 3000; min-width: 160px;
+    opacity: 0; transform: scale(0.95); transform-origin: top left;
+    transition: opacity 0.15s, transform 0.15s;
+    pointer-events: none;
+  }
+  .ctx-menu.show { opacity: 1; transform: scale(1); pointer-events: all; }
+  .ctx-item {
+    padding: 7px 14px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; color: var(--text);
+    transition: background 0.15s;
+  }
+  .ctx-item:hover { background: var(--bg2); }
+  .ctx-item.danger { color: var(--red); }
+  .ctx-item.danger:hover { background: var(--red-bg); }
+  .ctx-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+  /* ── TOAST ── */
+  #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 5000; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--text); color: white;
+    padding: 10px 16px; border-radius: var(--radius2);
+    font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow2); max-width: 320px;
+    animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1) both;
+  }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toastOut {
+    from { opacity: 1; }
+    to { opacity: 0; transform: translateX(20px); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PAGE TRANSITIONS ── */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp 0.35s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); box-shadow: var(--shadow3); }
+    #main { margin-left: 0; padding: 20px 16px; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+    #papers-grid { grid-template-columns: 1fr; }
+    .detail-meta-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  /* ── LOADING ── */
+  .loading-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); display: inline-block;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.6} }
+
+  /* ── HIGHLIGHT SEARCH ── */
+  mark { background: #fff176; color: var(--text); border-radius: 2px; padding: 0 2px; }
+
+  .star-btn { border: none; background: none; cursor: pointer; font-size: 16px; padding: 2px; line-height: 1; transition: transform 0.2s; }
+  .star-btn:hover { transform: scale(1.3); }
+
+  .progress-bar { position: fixed; top: 48px; left: 0; right: 0; height: 2px; z-index: 999; }
+  .progress-bar-fill { height: 100%; background: var(--accent); width: 0; transition: width 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <a class="topbar-logo" onclick="switchPage('papers')">
+    <span class="dot"></span>
+    Research Hub
+  </a>
+  <nav class="topbar-nav">
+    <a onclick="switchPage('papers')" class="active" id="nav-papers">📚 论文库</a>
+    <a onclick="switchPage('research')" id="nav-research">💡 研究思考</a>
+    <a onclick="switchPage('about')" id="nav-about">ℹ️ 关于</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="搜索论文、作者…" oninput="filterPapers()">
+    </div>
+    <button class="btn-add" onclick="openAddModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+      添加论文
+    </button>
+  </div>
+</div>
+
+<div class="progress-bar"><div class="progress-bar-fill" id="progress-bar"></div></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">导航</div>
+    <div class="sidebar-item active" onclick="setFilter('all'); setActiveNav(this)" id="nav-all">
+      <span class="icon">🏠</span> 全部论文
+      <span class="count" id="count-all">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('starred'); setActiveNav(this)">
+      <span class="icon">⭐</span> 已收藏
+      <span class="count" id="count-starred">0</span>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">分类</div>
+    <div class="sidebar-item" onclick="setFilter('detection'); setActiveNav(this)">
+      <span class="icon">🎯</span> 目标检测
+      <span class="count" id="count-detection">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('segmentation'); setActiveNav(this)">
+      <span class="icon">✂️</span> 图像分割
+      <span class="count" id="count-segmentation">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('transformer'); setActiveNav(this)">
+      <span class="icon">🔮</span> Transformer
+      <span class="count" id="count-transformer">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('generation'); setActiveNav(this)">
+      <span class="icon">🎨</span> 图像生成
+      <span class="count" id="count-generation">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('tracking'); setActiveNav(this)">
+      <span class="icon">📡</span> 目标跟踪
+      <span class="count" id="count-tracking">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('classification'); setActiveNav(this)">
+      <span class="icon">🏷️</span> 图像分类
+      <span class="count" id="count-classification">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('3d'); setActiveNav(this)">
+      <span class="icon">🌐</span> 三维视觉
+      <span class="count" id="count-3d">0</span>
+    </div>
+    <div class="sidebar-item" onclick="setFilter('multimodal'); setActiveNav(this)">
+      <span class="icon">🔗</span> 多模态
+      <span class="count" id="count-multimodal">0</span>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">工具</div>
+    <div class="sidebar-item" onclick="exportData()">
+      <span class="icon">💾</span> 导出数据
+    </div>
+    <div class="sidebar-item" onclick="document.getElementById('import-input').click()">
+      <span class="icon">📂</span> 导入数据
+    </div>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- PAPERS PAGE -->
+  <div class="page active" id="page-papers">
+    <div class="page-header">
+      <h1 id="page-title">📚 论文库</h1>
+      <p id="page-subtitle">管理和浏览你的计算机视觉研究论文</p>
+      <div class="header-actions">
+        <div class="filter-tabs" id="filter-tabs">
+          <span class="filter-tab active" onclick="setSortBy('date', this)">📅 最新</span>
+          <span class="filter-tab" onclick="setSortBy('title', this)">🔤 名称</span>
+          <span class="filter-tab" onclick="setSortBy('starred', this)">⭐ 收藏</span>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" id="grid-btn" onclick="setView('grid')" title="网格视图">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </button>
+          <button class="view-btn" id="list-btn" onclick="setView('list')" title="列表视图">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">总论文数</div>
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-sub">篇论文</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="background:var(--accent);width:100%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已收藏</div>
+        <div class="stat-num" id="stat-starred">0</div>
+        <div class="stat-sub">篇重要论文</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-starred" style="background:#f9a825;width:0%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">研究方向</div>
+        <div class="stat-num" id="stat-cats">0</div>
+        <div class="stat-sub">个分类方向</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="background:var(--green);width:100%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">最近添加</div>
+        <div class="stat-num" id="stat-recent">0</div>
+        <div class="stat-sub">篇（近30天）</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="background:var(--purple);width:70%"></div></div>
+      </div>
+    </div>
+
+    <div id="papers-grid"></div>
+    <div id="empty-state" class="empty-state" style="display:none">
+      <div class="empty-icon">📄</div>
+      <p>暂无论文，点击右上角「添加论文」开始吧！</p>
+    </div>
+  </div>
+
+  <!-- RESEARCH PAGE -->
+  <div class="page" id="page-research">
+    <div class="page-header">
+      <h1>💡 研究思考空间</h1>
+      <p>系统化管理你的研究方向、选题决策与创新灵感</p>
+      <div class="header-actions" style="margin-top:16px">
+        <div class="filter-tabs">
+          <span class="filter-tab active" onclick="setResearchTab('board',this)">📋 思考板</span>
+          <span class="filter-tab" onclick="setResearchTab('roadmap',this)">🗺️ 研究路线图</span>
+          <span class="filter-tab" onclick="setResearchTab('matrix',this)">📊 优先级矩阵</span>
+          <span class="filter-tab" onclick="setResearchTab('goals',this)">🎯 目标追踪</span>
+        </div>
+        <button class="btn-add" onclick="openAddThought()" style="margin-left:auto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+          新增思考
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: THOUGHT BOARD -->
+    <div id="rtab-board" class="rtab active">
+
+      <!-- Research Stats Strip -->
+      <div class="r-stats-strip" id="r-stats-strip"></div>
+
+      <!-- Type Filter Bar -->
+      <div class="thought-filter-bar">
+        <span class="thought-filter-chip active" onclick="filterThoughts('all',this)">全部</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('direction',this)" style="--fc:#107c10;--fb:#e8f5e9">🧭 研究方向</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('idea',this)" style="--fc:#0078d4;--fb:#e8f4fd">💡 研究想法</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('problem',this)" style="--fc:#d83b01;--fb:#fff3e0">❓ 待解决</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('insight',this)" style="--fc:#5c2d91;--fb:#f3e8ff">✨ 洞察</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('todo',this)" style="--fc:#008272;--fb:#e0f5f5">📋 待阅读</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('question',this)" style="--fc:#8b6914;--fb:#fff8e1">🔬 研究问题</span>
+        <span class="thought-filter-chip" onclick="filterThoughts('method',this)" style="--fc:#c50f1f;--fb:#fde7e9">⚙️ 方法探索</span>
+      </div>
+
+      <div class="thought-cards" id="thought-cards"></div>
+    </div>
+
+    <!-- TAB: ROADMAP -->
+    <div id="rtab-roadmap" class="rtab" style="display:none">
+      <div class="roadmap-container" id="roadmap-container"></div>
+    </div>
+
+    <!-- TAB: PRIORITY MATRIX -->
+    <div id="rtab-matrix" class="rtab" style="display:none">
+      <div class="matrix-wrap">
+        <div class="matrix-title-row">
+          <div></div>
+          <div class="matrix-axis-label" style="color:var(--green)">↑ 创新性高</div>
+          <div></div>
+        </div>
+        <div class="matrix-grid">
+          <div class="matrix-axis-label-v">难度大 →</div>
+          <div class="matrix-quadrant" id="mq-hard-high" style="background:linear-gradient(135deg,#fff8e1,#fff3e0)">
+            <div class="mq-label">🔴 挑战型<br><small>高创新·高难度</small></div>
+            <div class="mq-items" id="mqc-hard-high"></div>
+          </div>
+          <div class="matrix-quadrant" id="mq-easy-high" style="background:linear-gradient(135deg,#e8f5e9,#e0f5f5)">
+            <div class="mq-label">🌟 首选型<br><small>高创新·低难度</small></div>
+            <div class="mq-items" id="mqc-easy-high"></div>
+          </div>
+          <div class="matrix-axis-label-v" style="color:var(--text3)">← 难度小</div>
+          <div class="matrix-quadrant" id="mq-hard-low" style="background:linear-gradient(135deg,#fde7e9,#fff0f0)">
+            <div class="mq-label">⚫ 避免型<br><small>低创新·高难度</small></div>
+            <div class="mq-items" id="mqc-hard-low"></div>
+          </div>
+          <div class="matrix-quadrant" id="mq-easy-low" style="background:linear-gradient(135deg,#e8f4fd,#f3e8ff)">
+            <div class="mq-label">🔵 备选型<br><small>低创新·低难度</small></div>
+            <div class="mq-items" id="mqc-easy-low"></div>
+          </div>
+        </div>
+        <div class="matrix-title-row">
+          <div></div>
+          <div class="matrix-axis-label" style="color:var(--text3)">↓ 创新性低</div>
+          <div></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;font-size:12px;color:var(--text3);text-align:center">
+        在思考板中设置「优先级」属性后，卡片将自动出现在对应象限
+      </div>
+    </div>
+
+    <!-- TAB: GOALS -->
+    <div id="rtab-goals" class="rtab" style="display:none">
+      <div id="goals-container"></div>
+    </div>
+
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div class="page" id="page-about">
+    <div class="page-header">
+      <h1>ℹ️ 关于 Research Hub</h1>
+      <p>一个为计算机视觉研究者打造的论文管理工具</p>
+    </div>
+    <div style="max-width:600px;background:white;border:1px solid var(--border);border-radius:var(--radius2);padding:28px;animation:fadeUp 0.4s ease both">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:16px">✨ 功能说明</h3>
+      <ul style="font-size:14px;color:var(--text2);line-height:2;padding-left:20px">
+        <li>多级分类管理（检测 / 分割 / Transformer 等）</li>
+        <li>画板式论文卡片，含作者、时间、摘要等属性</li>
+        <li>实时搜索与筛选，支持星标收藏</li>
+        <li>研究思考板块，记录选题灵感</li>
+        <li>JSON 导入/导出，轻松备份数据</li>
+        <li>数据存储于浏览器 LocalStorage，刷新不丢失</li>
+      </ul>
+      <div style="margin-top:20px;padding:16px;background:var(--accent-light);border-radius:var(--radius);font-size:13px;color:var(--accent)">
+        💡 <strong>GitHub 部署提示：</strong>将 index.html 推送到仓库并开启 GitHub Pages，即可在线访问。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADD/EDIT PAPER MODAL -->
+<div class="modal-overlay" id="paper-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">📄 添加论文</h2>
+      <button class="modal-close" onclick="closeModal('paper-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">论文标题 *</label>
+          <input class="form-input" id="f-title" placeholder="输入完整论文标题…">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">主分类 *</label>
+          <select class="form-select" id="f-cat">
+            <option value="detection">🎯 目标检测</option>
+            <option value="segmentation">✂️ 图像分割</option>
+            <option value="transformer">🔮 Transformer</option>
+            <option value="generation">🎨 图像生成</option>
+            <option value="tracking">📡 目标跟踪</option>
+            <option value="classification">🏷️ 图像分类</option>
+            <option value="3d">🌐 三维视觉</option>
+            <option value="multimodal">🔗 多模态</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">子方向标签</label>
+          <input class="form-input" id="f-tags" placeholder="如: DETR, ViT, CLIP (逗号分隔)">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">第一作者</label>
+          <input class="form-input" id="f-first-author" placeholder="First Author">
+        </div>
+        <div class="form-group">
+          <label class="form-label">所有作者</label>
+          <input class="form-input" id="f-authors" placeholder="Author1, Author2, et al.">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">发表年份</label>
+          <input class="form-input" id="f-year" type="number" placeholder="2024" min="2000" max="2030">
+        </div>
+        <div class="form-group">
+          <label class="form-label">发表会议/期刊</label>
+          <input class="form-input" id="f-venue" placeholder="如: CVPR 2024, ICCV 2023">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">论文链接 (arXiv/DOI)</label>
+          <input class="form-input" id="f-link" placeholder="https://arxiv.org/abs/…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">代码链接 (GitHub)</label>
+          <input class="form-input" id="f-code" placeholder="https://github.com/…">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">
+            📎 本地 PDF 路径
+            <span style="font-weight:400;color:var(--text3);font-size:11px;text-transform:none;letter-spacing:0">
+              — 相对于网站根目录，如 data/transformer/vit.pdf
+            </span>
+          </label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="form-input" id="f-pdf" placeholder="data/分类/论文文件名.pdf" style="flex:1">
+            <label class="btn btn-ghost" style="cursor:pointer;white-space:nowrap;padding:8px 12px" title="从本地选择PDF文件（仅用于预览路径）">
+              📂 选择文件
+              <input type="file" accept=".pdf" style="display:none" onchange="previewPdfPath(event)">
+            </label>
+          </div>
+          <div id="f-pdf-hint" style="font-size:11px;color:var(--text3);margin-top:4px;display:none"></div>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">摘要 / 核心内容</label>
+          <textarea class="form-textarea" id="f-abstract" rows="3" placeholder="论文摘要或核心贡献简述…"></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">📝 个人笔记</label>
+          <textarea class="form-textarea" id="f-notes" rows="3" placeholder="你的阅读笔记、感想、与选题的关联…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('paper-modal')">取消</button>
+      <button class="btn btn-primary" onclick="savePaper()">💾 保存论文</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAPER DETAIL MODAL  (full-screen PDF reader) -->
+<div class="modal-overlay" id="detail-modal" style="align-items:stretch;padding:0">
+  <div class="detail-full-modal">
+    <!-- LEFT: metadata panel -->
+    <div class="detail-left" id="detail-left">
+      <div class="detail-left-header">
+        <div style="flex:1;min-width:0">
+          <div id="detail-title" style="font-size:15px;font-weight:800;line-height:1.5;color:var(--text)"></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn btn-ghost" onclick="editCurrentPaper()" style="font-size:12px;padding:5px 10px">✏️</button>
+          <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+        </div>
+      </div>
+      <div class="detail-left-body" id="detail-body"></div>
+    </div>
+    <!-- RIGHT: PDF viewer -->
+    <div class="detail-right" id="detail-right">
+      <div class="pdf-toolbar" id="pdf-toolbar">
+        <span id="pdf-filename" style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1"></span>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="pdf-tb-btn" id="pdf-zoom-out" onclick="zoomPdf(-0.2)" title="缩小">－</button>
+          <span id="pdf-zoom-label" style="font-size:12px;color:var(--text2);min-width:42px;text-align:center;font-weight:600">100%</span>
+          <button class="pdf-tb-btn" id="pdf-zoom-in" onclick="zoomPdf(0.2)" title="放大">＋</button>
+          <button class="pdf-tb-btn" onclick="openPdfNewTab()" title="新标签页打开">↗</button>
+        </div>
+      </div>
+      <div class="pdf-viewer-wrap" id="pdf-viewer-wrap">
+        <div class="pdf-placeholder" id="pdf-placeholder">
+          <div style="font-size:48px;margin-bottom:16px">📄</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)">暂无本地 PDF</div>
+          <div style="font-size:13px;color:var(--text3);max-width:300px;line-height:1.7;text-align:center">
+            将 PDF 放入 <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">data/分类/</code> 文件夹，<br>
+            在编辑论文时填写「本地 PDF 路径」即可在此预览
+          </div>
+          <div id="pdf-fallback-links" style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"></div>
+        </div>
+        <iframe id="pdf-iframe" style="display:none;width:100%;height:100%;border:none;background:white"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THOUGHT MODAL -->
+<div class="modal-overlay" id="thought-modal">
+  <div class="modal" style="width:640px">
+    <div class="modal-header">
+      <h2 id="thought-modal-title">💡 添加研究思考</h2>
+      <button class="modal-close" onclick="closeModal('thought-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">类型</label>
+          <select class="form-select" id="t-type">
+            <option value="idea">💡 研究想法</option>
+            <option value="direction">🧭 研究方向</option>
+            <option value="problem">❓ 待解决问题</option>
+            <option value="insight">✨ 洞察</option>
+            <option value="todo">📋 待阅读</option>
+            <option value="question">🔬 研究问题</option>
+            <option value="method">⚙️ 方法探索</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <input class="form-input" id="t-title" placeholder="简短标题">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">详细内容</label>
+          <textarea class="form-textarea" id="t-body" rows="5" placeholder="详细描述你的想法、思路、参考文献…"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">进度状态</label>
+          <select class="form-select" id="t-status">
+            <option value="active">🔵 进行中</option>
+            <option value="pending">⏳ 待启动</option>
+            <option value="done">✅ 已完成</option>
+            <option value="paused">⏸️ 暂停</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">优先级</label>
+          <select class="form-select" id="t-priority">
+            <option value="">— 不设置 —</option>
+            <option value="easy-high">🌟 首选型（高创新·低难度）</option>
+            <option value="hard-high">🔴 挑战型（高创新·高难度）</option>
+            <option value="easy-low">🔵 备选型（低创新·低难度）</option>
+            <option value="hard-low">⚫ 避免型（低创新·高难度）</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">关联论文（标题关键词）</label>
+          <input class="form-input" id="t-papers" placeholder="如: SAM, DETR, ViT（逗号分隔）">
+        </div>
+        <div class="form-group">
+          <label class="form-label">完成进度 %</label>
+          <input class="form-input" id="t-progress" type="number" min="0" max="100" placeholder="0~100">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">下一步行动</label>
+          <input class="form-input" id="t-next" placeholder="最近要做的具体一步行动…">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="t-delete-btn" onclick="deleteCurrentThought()" style="display:none;margin-right:auto">🗑️ 删除</button>
+      <button class="btn btn-ghost" onclick="closeModal('thought-modal')">取消</button>
+      <button class="btn btn-primary" onclick="saveThought()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" onclick="ctxAction('view')">🔍 查看详情</div>
+  <div class="ctx-item" onclick="ctxAction('edit')">✏️ 编辑</div>
+  <div class="ctx-item" onclick="ctxAction('star')">⭐ 切换收藏</div>
+  <div class="ctx-divider"></div>
+  <div class="ctx-item danger" onclick="ctxAction('delete')">🗑️ 删除</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA LAYER
+// ═══════════════════════════════════════════════════════
+const STORAGE_KEY = 'research_hub_papers';
+const THOUGHTS_KEY = 'research_hub_thoughts';
+
+let papers = [];
+let thoughts = [];
+let currentFilter = 'all';
+let currentSort = 'date';
+let currentView = 'grid';
+let editingId = null;
+let editingThoughtId = null;
+let ctxPaperId = null;
+let detailPaperId = null;
+
+const CAT_LABELS = {
+  detection: '目标检测', segmentation: '图像分割', transformer: 'Transformer',
+  generation: '图像生成', tracking: '目标跟踪', classification: '图像分类',
+  '3d': '三维视觉', multimodal: '多模态'
+};
+const CAT_ICONS = {
+  detection:'🎯', segmentation:'✂️', transformer:'🔮',
+  generation:'🎨', tracking:'📡', classification:'🏷️', '3d':'🌐', multimodal:'🔗'
+};
+const THOUGHT_TYPES = {
+  idea:{ label:'💡 研究想法', color:'#0078d4', bg:'#e8f4fd' },
+  direction:{ label:'🧭 研究方向', color:'#107c10', bg:'#e8f5e9' },
+  problem:{ label:'❓ 待解决', color:'#d83b01', bg:'#fff3e0' },
+  insight:{ label:'✨ 洞察', color:'#5c2d91', bg:'#f3e8ff' },
+  todo:{ label:'📋 待阅读', color:'#008272', bg:'#e0f5f5' },
+  question:{ label:'🔬 研究问题', color:'#8b6914', bg:'#fff8e1' },
+  method:{ label:'⚙️ 方法探索', color:'#c50f1f', bg:'#fde7e9' },
+};
+const STATUS_MAP = {
+  active:{ label:'进行中', dot:'#0078d4' },
+  pending:{ label:'待启动', dot:'#d83b01' },
+  done:{ label:'已完成', dot:'#107c10' },
+  paused:{ label:'已暂停', dot:'#888' },
+};
+const PRIORITY_MAP = {
+  'easy-high':{ label:'🌟 首选', cls:'priority-easy-high' },
+  'hard-high':{ label:'🔴 挑战', cls:'priority-hard-high' },
+  'easy-low':{ label:'🔵 备选', cls:'priority-easy-low' },
+  'hard-low':{ label:'⚫ 避免', cls:'priority-hard-low' },
+};
+
+let thoughtFilter = 'all';
+let currentResearchTab = 'board';
+
+async function loadData() {
+  // Load thoughts from localStorage
+  try { thoughts = JSON.parse(localStorage.getItem(THOUGHTS_KEY)) || []; } catch(e){ thoughts=[]; }
+
+  // Load papers: try papers.json first, then localStorage, then sample
+  try {
+    const res = await fetch('data/papers.json');
+    if (res.ok) {
+      const jsonPapers = await res.json();
+      // Merge with any localStorage overrides (starred state, notes, etc.)
+      let localPapers = [];
+      try { localPapers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e){}
+      const localMap = {};
+      localPapers.forEach(p => { localMap[p.id] = p; });
+      // JSON file is the source of truth for paper data; localStorage stores user edits
+      papers = jsonPapers.map(p => ({
+        ...p,
+        // Keep user-editable fields from localStorage if they exist
+        starred: localMap[p.id] ? localMap[p.id].starred : (p.starred || false),
+        notes: localMap[p.id] ? localMap[p.id].notes : (p.notes || ''),
+        addedAt: p.addedAt || Date.now(),
+      }));
+      // Also include any papers added via UI that aren't in papers.json
+      const jsonIds = new Set(jsonPapers.map(p=>p.id));
+      localPapers.filter(p => !jsonIds.has(p.id)).forEach(p => papers.push(p));
+      toast('✅ 已从 data/papers.json 加载论文', 'success');
+    } else {
+      throw new Error('papers.json not found');
+    }
+  } catch(e) {
+    // Fallback: localStorage
+    try { papers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e2){ papers=[]; }
+    if (!papers.length) loadSampleData();
+  }
+
+  if (!thoughts.length) {
+    // Load sample thoughts
+    thoughts = [
+      { id: uid(), type: 'direction', title: '研究方向初步锁定', body: '目前倾向于在「分割与生成的交叉领域」展开研究，具体考虑：\n1. 利用扩散模型的强大生成能力辅助实例分割（数据增强方向）\n2. SAM+CLIP的零样本分割提升\n3. 视频目标分割与跟踪的统一框架', status: 'active', priority: 'easy-high', progress: 40, relatedPapers: 'SAM, CLIP, DDPM', nextAction: '精读 SAM 论文附录，整理核心贡献', date: '2025-01-10' },
+      { id: uid(), type: 'problem', title: '小样本分割的核心瓶颈', body: '当前分割模型在少量样本下性能急剧下降。核心矛盾：\n- 泛化性 vs 特异性\n- 预训练知识利用 vs 过拟合新类别', status: 'active', priority: 'hard-high', progress: 20, relatedPapers: 'SAM, ViT', nextAction: '调研 few-shot segmentation survey 2024', date: '2025-01-12' },
+      { id: uid(), type: 'method', title: 'Prompt Tuning 在视觉分割中的应用', body: '受NLP中Prompt Tuning启发，考虑为SAM设计视觉提示生成器。', status: 'active', priority: 'easy-high', progress: 60, relatedPapers: 'SAM, CLIP, ViT', nextAction: '实现 prototype 版本，在 COCO 上验证', date: '2025-01-20' },
+    ];
+    saveData();
+  }
+}
+
+function previewPdfPath(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  // Suggest the relative path based on selected category
+  const cat = document.getElementById('f-cat').value;
+  const safeName = file.name.replace(/\s+/g, '-').toLowerCase();
+  const suggested = `data/${cat}/${safeName}`;
+  document.getElementById('f-pdf').value = suggested;
+  const hint = document.getElementById('f-pdf-hint');
+  hint.textContent = `💡 建议路径：${suggested}  —  请将 PDF 文件放到该位置`;
+  hint.style.display = 'block';
+  hint.style.color = 'var(--orange)';
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(papers));
+  localStorage.setItem(THOUGHTS_KEY, JSON.stringify(thoughts));
+}
+
+function loadSampleData() {
+  papers = [
+    { id: uid(), title: 'Attention Is All You Need', category: 'transformer', tags: ['Self-Attention','NLP','Architecture'], authors: 'Vaswani, A., Shazeer, N., Parmar, N., et al.', firstAuthor: 'Vaswani', year: 2017, venue: 'NeurIPS 2017', abstract: '提出了完全基于注意力机制的Transformer架构，奠定了现代大模型基础。', link: 'https://arxiv.org/abs/1706.03762', code: '', pdf: 'data/transformer/attention-is-all-you-need.pdf', notes: '开山之作，必读。', starred: true, addedAt: Date.now() - 1*864e5 },
+    { id: uid(), title: 'An Image is Worth 16x16 Words', category: 'transformer', tags: ['ViT','Image Recognition'], authors: 'Dosovitskiy, A., et al.', firstAuthor: 'Dosovitskiy', year: 2021, venue: 'ICLR 2021', abstract: '将Transformer直接应用于图像分块序列，提出ViT模型。', link: 'https://arxiv.org/abs/2010.11929', code: 'https://github.com/google-research/vision_transformer', pdf: 'data/transformer/vit-image-worth-16x16.pdf', notes: '', starred: true, addedAt: Date.now() - 2*864e5 },
+    { id: uid(), title: 'DETR: End-to-End Object Detection with Transformers', category: 'detection', tags: ['DETR','End-to-End'], authors: 'Carion, N., et al.', firstAuthor: 'Carion', year: 2020, venue: 'ECCV 2020', abstract: '首次将Transformer用于目标检测，实现真正的端到端目标检测。', link: 'https://arxiv.org/abs/2005.12872', code: 'https://github.com/facebookresearch/detr', pdf: 'data/detection/detr.pdf', notes: '', starred: true, addedAt: Date.now() - 3*864e5 },
+    { id: uid(), title: 'Segment Anything', category: 'segmentation', tags: ['SAM','Foundation Model','Zero-shot'], authors: 'Kirillov, A., et al.', firstAuthor: 'Kirillov', year: 2023, venue: 'ICCV 2023', abstract: '提出SAM，具有零样本分割能力的视觉基础模型。', link: 'https://arxiv.org/abs/2304.02643', code: 'https://github.com/facebookresearch/segment-anything', pdf: 'data/segmentation/segment-anything.pdf', notes: 'SAM在医学影像领域有广泛应用前景。', starred: true, addedAt: Date.now() - 7*864e5 },
+    { id: uid(), title: 'CLIP: Learning Transferable Visual Models', category: 'multimodal', tags: ['CLIP','Contrastive Learning'], authors: 'Radford, A., et al.', firstAuthor: 'Radford', year: 2021, venue: 'ICML 2021', abstract: '通过对比学习将图像和文本对齐，实现强大的零样本迁移能力。', link: 'https://arxiv.org/abs/2103.00020', code: 'https://github.com/openai/CLIP', pdf: 'data/multimodal/clip.pdf', notes: '', starred: false, addedAt: Date.now() - 10*864e5 },
+    { id: uid(), title: 'Denoising Diffusion Probabilistic Models', category: 'generation', tags: ['Diffusion','DDPM'], authors: 'Ho, J., Jain, A., Abbeel, P.', firstAuthor: 'Ho', year: 2020, venue: 'NeurIPS 2020', abstract: '提出DDPM，奠定了现代图像生成模型的理论基础。', link: 'https://arxiv.org/abs/2006.11239', code: '', pdf: 'data/generation/ddpm.pdf', notes: '', starred: false, addedAt: Date.now() - 15*864e5 },
+    { id: uid(), title: 'NeRF: Neural Radiance Fields for View Synthesis', category: '3d', tags: ['NeRF','Novel View Synthesis'], authors: 'Mildenhall, B., et al.', firstAuthor: 'Mildenhall', year: 2020, venue: 'ECCV 2020', abstract: '用MLP隐式表示场景，开创了神经辐射场研究方向。', link: 'https://arxiv.org/abs/2003.08934', code: 'https://github.com/bmild/nerf', pdf: 'data/3d/nerf.pdf', notes: '', starred: true, addedAt: Date.now() - 20*864e5 },
+  ];
+  saveData();
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function render() {
+  updateCounts();
+  renderPapers();
+  renderThoughts();
+  updateStats();
+}
+
+function getFilteredPapers() {
+  let q = document.getElementById('search-input').value.trim().toLowerCase();
+  let filtered = papers.filter(p => {
+    if (currentFilter === 'starred') return p.starred;
+    if (currentFilter !== 'all') return p.category === currentFilter;
+    return true;
+  });
+  if (q) filtered = filtered.filter(p =>
+    p.title.toLowerCase().includes(q) ||
+    (p.authors||'').toLowerCase().includes(q) ||
+    (p.abstract||'').toLowerCase().includes(q) ||
+    (p.tags||[]).some(t => t.toLowerCase().includes(q)) ||
+    (p.venue||'').toLowerCase().includes(q)
+  );
+  if (currentSort === 'date') filtered.sort((a,b) => b.addedAt - a.addedAt);
+  else if (currentSort === 'title') filtered.sort((a,b) => a.title.localeCompare(b.title));
+  else if (currentSort === 'starred') filtered.sort((a,b) => (b.starred?1:0)-(a.starred?1:0));
+  return filtered;
+}
+
+function hl(text, q) {
+  if (!q) return text;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+function renderPapers() {
+  const grid = document.getElementById('papers-grid');
+  const empty = document.getElementById('empty-state');
+  const filtered = getFilteredPapers();
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  if (currentView === 'list') grid.classList.add('list-view');
+  else grid.classList.remove('list-view');
+
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="paper-card ${currentView === 'list' ? 'list-view' : ''}"
+      style="animation-delay:${i * 0.04}s"
+      onclick="openDetail('${p.id}')"
+      oncontextmenu="showCtx(event,'${p.id}')">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-cat ${p.category}">${CAT_ICONS[p.category]||''} ${CAT_LABELS[p.category]||p.category}</span>
+            ${(p.tags||[]).slice(0,2).map(t=>`<span class="badge badge-venue">${t}</span>`).join('')}
+            ${p.venue ? `<span class="badge badge-venue">${p.venue}</span>` : ''}
+            ${p.year ? `<span class="badge badge-year">${p.year}</span>` : ''}
+            ${p.pdf ? `<span class="badge badge-pdf" onclick="event.stopPropagation();openDetail('${p.id}')" title="有本地PDF">📎 PDF</span>` : ''}
+          </div>
+          <button class="star-btn" onclick="event.stopPropagation();toggleStar('${p.id}')" title="${p.starred?'取消收藏':'收藏'}">${p.starred?'⭐':'☆'}</button>
+        </div>
+        <div class="card-title">${hl(p.title, q)}</div>
+        <div class="card-authors">${hl(p.authors||'', q)}</div>
+        ${currentView !== 'list' && p.abstract ? `<div class="card-abstract">${hl(p.abstract, q)}</div>` : ''}
+        <div class="card-footer">
+          <div class="card-meta">
+            ${p.firstAuthor ? `<span class="card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${hl(p.firstAuthor, q)}</span>` : ''}
+            ${p.year ? `<span class="card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${p.year}</span>` : ''}
+          </div>
+          <div class="card-actions">
+            ${p.link ? `<a class="card-action-btn" href="${p.link}" target="_blank" onclick="event.stopPropagation()" title="打开论文">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>` : ''}
+            ${p.code ? `<a class="card-action-btn" href="${p.code}" target="_blank" onclick="event.stopPropagation()" title="查看代码">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </a>` : ''}
+            <button class="card-action-btn" onclick="event.stopPropagation();openEdit('${p.id}')" title="编辑">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderThoughts() {
+  renderThoughtStats();
+  renderThoughtBoard();
+  renderRoadmap();
+  renderMatrix();
+  renderGoals();
+}
+
+function renderThoughtStats() {
+  const el = document.getElementById('r-stats-strip');
+  if (!el) return;
+  const total = thoughts.length;
+  const active = thoughts.filter(t=>t.status==='active').length;
+  const done = thoughts.filter(t=>t.status==='done').length;
+  const highPri = thoughts.filter(t=>t.priority==='easy-high'||t.priority==='hard-high').length;
+  const avgProg = total ? Math.round(thoughts.reduce((s,t)=>s+(t.progress||0),0)/total) : 0;
+  el.innerHTML = `
+    <div class="r-stat"><div class="rs-num" style="color:var(--accent)">${total}</div><div class="rs-label">总思考数</div></div>
+    <div class="r-stat"><div class="rs-num" style="color:#0078d4">${active}</div><div class="rs-label">进行中</div></div>
+    <div class="r-stat"><div class="rs-num" style="color:var(--green)">${done}</div><div class="rs-label">已完成</div></div>
+    <div class="r-stat"><div class="rs-num" style="color:#d83b01">${highPri}</div><div class="rs-label">高优先级</div></div>
+    <div class="r-stat"><div class="rs-num" style="color:var(--purple)">${avgProg}%</div><div class="rs-label">平均进度</div></div>
+  `;
+}
+
+function renderThoughtBoard() {
+  const container = document.getElementById('thought-cards');
+  if (!container) return;
+  let filtered = thoughts;
+  if (thoughtFilter !== 'all') filtered = thoughts.filter(t=>t.type===thoughtFilter);
+
+  const cards = filtered.map((t, i) => {
+    const type = THOUGHT_TYPES[t.type] || THOUGHT_TYPES.idea;
+    const status = STATUS_MAP[t.status||'active'];
+    const prio = t.priority ? PRIORITY_MAP[t.priority] : null;
+    const prog = t.progress || 0;
+    const related = (t.relatedPapers||'').split(',').map(s=>s.trim()).filter(Boolean);
+    return `
+      <div class="thought-card" style="--tc:${type.color}" onclick="openEditThought('${t.id}')"
+        style="animation-delay:${i*0.04}s">
+        <div class="thought-card-header">
+          <span class="thought-tag" style="background:${type.bg};color:${type.color}">${type.label}</span>
+          <div class="thought-status-dot" style="background:${status.dot}" title="${status.label}"></div>
+          <button class="thought-card-menu" onclick="event.stopPropagation();deleteThought('${t.id}')" title="删除">✕</button>
+        </div>
+        <div class="thought-title">${t.title}</div>
+        <div class="thought-body">${t.body.replace(/\n/g,'<br>')}</div>
+        ${prog > 0 ? `
+        <div class="thought-progress-wrap">
+          <div class="thought-progress-label"><span>进度</span><span>${prog}%</span></div>
+          <div class="thought-progress-bar"><div class="thought-progress-fill" style="width:${prog}%;background:${type.color}"></div></div>
+        </div>` : ''}
+        ${t.nextAction ? `<div class="thought-next">➤ <span>${t.nextAction}</span></div>` : ''}
+        ${related.length ? `<div class="thought-related-papers">${related.map(r=>`<span class="thought-paper-chip" onclick="event.stopPropagation();searchRelatedPaper('${r}')" title="搜索相关论文">${r}</span>`).join('')}</div>` : ''}
+        <div class="thought-footer">
+          <span class="thought-date">📅 ${t.date||''}</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            ${prio ? `<span class="thought-priority-badge ${prio.cls}">${prio.label}</span>` : ''}
+            <span class="thought-priority-badge status-${t.status||'active'}">${status.label}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  cards.push(`<div class="add-thought-btn" onclick="openAddThought()">
+    <span class="plus-icon">+</span>
+    <span>添加新思考</span>
+  </div>`);
+  container.innerHTML = cards.join('');
+}
+
+function renderRoadmap() {
+  const el = document.getElementById('roadmap-container');
+  if (!el) return;
+
+  const phases = [
+    { title:'方向探索', sub:'当前阶段', color:'#0078d4', bg:'#e8f4fd', statuses:['active','pending'] },
+    { title:'方法研究', sub:'深化阶段', color:'#5c2d91', bg:'#f3e8ff', statuses:['active'] },
+    { title:'实验验证', sub:'推进阶段', color:'#107c10', bg:'#e8f5e9', statuses:['done'] },
+    { title:'论文撰写', sub:'输出阶段', color:'#d83b01', bg:'#fff3e0', statuses:['paused'] },
+  ];
+
+  const typeOrder = ['direction','problem','method','question','idea','insight','todo'];
+  const phaseMap = {
+    'direction': 0, 'problem': 0, 'question': 0,
+    'method': 1, 'insight': 1,
+    'idea': 2,
+    'todo': 3,
+  };
+
+  const grouped = [[], [], [], []];
+  thoughts.forEach(t => {
+    const idx = phaseMap[t.type] ?? 0;
+    grouped[idx].push(t);
+  });
+
+  if (!thoughts.length) {
+    el.innerHTML = `<div class="roadmap-empty">📝 暂无思考卡片，请先在「思考板」中添加内容</div>`;
+    return;
+  }
+
+  el.innerHTML = phases.map((phase, pi) => {
+    const items = grouped[pi];
+    const isLast = pi === phases.length - 1;
+    return `
+      <div class="roadmap-phase" style="animation-delay:${pi*0.1}s">
+        <div class="roadmap-phase-label">
+          <div class="phase-title" style="color:${phase.color}">${phase.title}</div>
+          <div class="phase-sub">${phase.sub}</div>
+        </div>
+        <div class="roadmap-line-col">
+          <div class="roadmap-dot" style="box-shadow:0 0 0 2px ${phase.color};background:${phase.color}"></div>
+          ${!isLast ? `<div class="roadmap-vline" style="background:linear-gradient(${phase.color},${phases[pi+1].color})"></div>` : ''}
+        </div>
+        <div class="roadmap-cards">
+          ${items.length ? items.map(t => {
+            const type = THOUGHT_TYPES[t.type]||THOUGHT_TYPES.idea;
+            const prog = t.progress||0;
+            return `<div class="roadmap-card" onclick="openEditThought('${t.id}')">
+              <span class="rc-tag" style="background:${type.bg};color:${type.color}">${type.label}</span>
+              <div class="rc-title">${t.title}</div>
+              <div class="rc-prog"><div class="rc-prog-fill" style="width:${prog}%;background:${phase.color}"></div></div>
+              <div class="rc-status" style="color:${phase.color}">${prog}% · ${STATUS_MAP[t.status||'active'].label}</div>
+            </div>`;
+          }).join('') : `<div style="color:var(--text3);font-size:13px;padding:10px 0">暂无内容</div>`}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderMatrix() {
+  const quadrants = ['easy-high','hard-high','easy-low','hard-low'];
+  quadrants.forEach(q => {
+    const el = document.getElementById('mqc-'+q);
+    if (!el) return;
+    const items = thoughts.filter(t=>t.priority===q);
+    el.innerHTML = items.length ? items.map(t => {
+      const type = THOUGHT_TYPES[t.type]||THOUGHT_TYPES.idea;
+      return `<div class="mq-item" onclick="openEditThought('${t.id}')">
+        <span style="font-size:14px">${type.label.split(' ')[0]}</span>
+        <span>${t.title}</span>
+      </div>`;
+    }).join('') : `<div style="color:var(--text3);font-size:12px;padding:4px">暂无</div>`;
+  });
+}
+
+function renderGoals() {
+  const el = document.getElementById('goals-container');
+  if (!el) return;
+  const active = thoughts.filter(t=>t.priority==='easy-high'||t.priority==='hard-high');
+  if (!active.length) {
+    el.innerHTML = `
+      <div class="goals-header"><h3 style="font-size:16px;font-weight:800">🎯 重点目标追踪</h3></div>
+      <div class="empty-state"><div class="empty-icon">🎯</div><p>设置「首选型」或「挑战型」优先级后，将在此追踪</p></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="goals-header">
+      <h3 style="font-size:16px;font-weight:800">🎯 重点目标追踪</h3>
+      <span style="font-size:13px;color:var(--text3)">${active.length} 个高优先级目标</span>
+    </div>
+    <div class="goals-grid">
+      ${active.map((t,i) => {
+        const type = THOUGHT_TYPES[t.type]||THOUGHT_TYPES.idea;
+        const prog = t.progress||0;
+        const prio = PRIORITY_MAP[t.priority]||{};
+        const r = 18; const circ = 2*Math.PI*r;
+        const dash = (prog/100)*circ;
+        return `
+          <div class="goal-card" onclick="openEditThought('${t.id}')" style="animation-delay:${i*0.06}s">
+            <div class="goal-top">
+              <div class="goal-circle" style="background:${type.bg}">
+                <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="${r}" fill="none" stroke="${type.bg}" stroke-width="4"/><circle cx="22" cy="22" r="${r}" fill="none" stroke="${type.color}" stroke-width="4" stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/></svg>
+                <span class="gc-num" style="color:${type.color}">${prog}%</span>
+              </div>
+              <div>
+                <div class="goal-title">${t.title}</div>
+                <span class="thought-priority-badge ${prio.cls||''}" style="font-size:10px">${prio.label||''}</span>
+              </div>
+            </div>
+            <div class="goal-body">${(t.body||'').split('\n')[0]}</div>
+            ${t.nextAction ? `<div class="goal-next"><strong>➤ 下一步：</strong>${t.nextAction}</div>` : ''}
+            <div class="goal-meta">
+              <span class="goal-meta-item">📅 ${t.date||'—'}</span>
+              <span class="goal-meta-item status-${t.status||'active'}" style="padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">${STATUS_MAP[t.status||'active'].label}</span>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function filterThoughts(f, el) {
+  thoughtFilter = f;
+  document.querySelectorAll('.thought-filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderThoughtBoard();
+}
+
+function setResearchTab(tab, el) {
+  currentResearchTab = tab;
+  document.querySelectorAll('.rtab').forEach(t=>{ t.style.display='none'; t.classList.remove('active'); });
+  const target = document.getElementById('rtab-'+tab);
+  if (target) { target.style.display='block'; target.classList.add('active'); }
+  document.querySelectorAll('#page-research .filter-tab').forEach(t=>t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function searchRelatedPaper(keyword) {
+  switchPage('papers');
+  document.getElementById('search-input').value = keyword;
+  filterPapers();
+  document.getElementById('nav-papers').classList.add('active');
+  document.getElementById('nav-research').classList.remove('active');
+}
+
+function updateCounts() {
+  const cats = ['detection','segmentation','transformer','generation','tracking','classification','3d','multimodal'];
+  document.getElementById('count-all').textContent = papers.length;
+  document.getElementById('count-starred').textContent = papers.filter(p=>p.starred).length;
+  cats.forEach(c => {
+    const el = document.getElementById('count-'+c);
+    if (el) el.textContent = papers.filter(p=>p.category===c).length;
+  });
+}
+
+function updateStats() {
+  const total = papers.length;
+  const starred = papers.filter(p=>p.starred).length;
+  const cats = new Set(papers.map(p=>p.category)).size;
+  const recent = papers.filter(p=> Date.now()-p.addedAt < 30*864e5).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-starred').textContent = starred;
+  document.getElementById('stat-cats').textContent = cats;
+  document.getElementById('stat-recent').textContent = recent;
+  const bar = document.getElementById('bar-starred');
+  if (bar) bar.style.width = total ? (starred/total*100)+'%' : '0%';
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  ['papers','research','about'].forEach(n => {
+    const el = document.getElementById('nav-'+n);
+    if (el) el.classList.toggle('active', n===name);
+  });
+}
+
+function setActiveNav(el) {
+  document.querySelectorAll('#sidebar .sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.getElementById('page-title').textContent =
+    f === 'all' ? '📚 论文库' :
+    f === 'starred' ? '⭐ 已收藏论文' :
+    (CAT_ICONS[f]||'') + ' ' + (CAT_LABELS[f]||f);
+  renderPapers();
+  updateStats();
+}
+
+function setSortBy(s, el) {
+  currentSort = s;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderPapers();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('grid-btn').classList.toggle('active', v==='grid');
+  document.getElementById('list-btn').classList.toggle('active', v==='list');
+  renderPapers();
+}
+
+function filterPapers() { renderPapers(); }
+
+// ═══════════════════════════════════════════════════════
+//  PAPER CRUD
+// ═══════════════════════════════════════════════════════
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = '📄 添加论文';
+  ['title','authors','first-author','year','venue','link','code','pdf','abstract','notes','tags'].forEach(f => {
+    const el = document.getElementById('f-'+f);
+    if(el) el.value = '';
+  });
+  document.getElementById('f-cat').value = 'detection';
+  const hint = document.getElementById('f-pdf-hint');
+  if (hint) hint.style.display = 'none';
+  openModal('paper-modal');
+}
+
+function openEdit(id) {
+  const p = papers.find(x=>x.id===id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = '✏️ 编辑论文';
+  document.getElementById('f-title').value = p.title||'';
+  document.getElementById('f-cat').value = p.category||'detection';
+  document.getElementById('f-tags').value = (p.tags||[]).join(', ');
+  document.getElementById('f-authors').value = p.authors||'';
+  document.getElementById('f-first-author').value = p.firstAuthor||'';
+  document.getElementById('f-year').value = p.year||'';
+  document.getElementById('f-venue').value = p.venue||'';
+  document.getElementById('f-link').value = p.link||'';
+  document.getElementById('f-code').value = p.code||'';
+  document.getElementById('f-pdf').value = p.pdf||'';
+  document.getElementById('f-abstract').value = p.abstract||'';
+  document.getElementById('f-notes').value = p.notes||'';
+  const hint = document.getElementById('f-pdf-hint');
+  if (hint && p.pdf) {
+    hint.textContent = `当前：${p.pdf}`;
+    hint.style.display = 'block';
+  }
+  openModal('paper-modal');
+}
+
+function savePaper() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { toast('请输入论文标题', 'error'); return; }
+
+  const data = {
+    title,
+    category: document.getElementById('f-cat').value,
+    tags: document.getElementById('f-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    authors: document.getElementById('f-authors').value.trim(),
+    firstAuthor: document.getElementById('f-first-author').value.trim(),
+    year: parseInt(document.getElementById('f-year').value)||null,
+    venue: document.getElementById('f-venue').value.trim(),
+    link: document.getElementById('f-link').value.trim(),
+    code: document.getElementById('f-code').value.trim(),
+    pdf: document.getElementById('f-pdf').value.trim(),
+    abstract: document.getElementById('f-abstract').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = papers.findIndex(p=>p.id===editingId);
+    if (idx !== -1) { papers[idx] = {...papers[idx], ...data}; }
+    toast('论文已更新 ✅', 'success');
+  } else {
+    papers.unshift({ id: uid(), ...data, starred: false, addedAt: Date.now() });
+    toast('论文已添加 🎉', 'success');
+  }
+  saveData(); render(); closeModal('paper-modal');
+}
+
+function deletePaper(id) {
+  papers = papers.filter(p=>p.id!==id);
+  saveData(); render();
+  toast('已删除', '');
+}
+
+function toggleStar(id) {
+  const p = papers.find(x=>x.id===id);
+  if (p) { p.starred = !p.starred; saveData(); render(); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DETAIL MODAL
+// ═══════════════════════════════════════════════════════
+let currentPdfUrl = null;
+let currentPdfZoom = 1.0;
+
+function openDetail(id) {
+  detailPaperId = id;
+  const p = papers.find(x=>x.id===id);
+  if (!p) return;
+
+  document.getElementById('detail-title').textContent = p.title;
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-badges">
+      <span class="badge badge-cat ${p.category}">${CAT_ICONS[p.category]||''} ${CAT_LABELS[p.category]||p.category}</span>
+      ${(p.tags||[]).map(t=>`<span class="badge badge-venue">${t}</span>`).join('')}
+      ${p.venue?`<span class="badge badge-venue">📍 ${p.venue}</span>`:''}
+      ${p.year?`<span class="badge badge-year">📅 ${p.year}</span>`:''}
+      ${p.starred?`<span class="badge badge-star">⭐ 已收藏</span>`:''}
+      ${p.pdf?`<span class="badge badge-pdf" onclick="jumpToPdf()">📎 本地PDF</span>`:''}
+    </div>
+    <div class="detail-meta-grid">
+      <div class="detail-meta-item"><div class="dm-label">第一作者</div><div class="dm-val">${p.firstAuthor||'—'}</div></div>
+      <div class="detail-meta-item"><div class="dm-label">发表时间</div><div class="dm-val">${p.year||'—'}</div></div>
+      <div class="detail-meta-item" style="grid-column:span 2"><div class="dm-label">发表会议/期刊</div><div class="dm-val">${p.venue||'—'}</div></div>
+    </div>
+    ${p.authors?`<div class="detail-section"><h4>👥 全部作者</h4><p style="font-family:'JetBrains Mono',monospace;font-size:11px">${p.authors}</p></div>`:''}
+    ${p.abstract?`<div class="detail-section"><h4>📝 摘要</h4><p>${p.abstract}</p></div>`:''}
+    ${p.notes?`<div class="detail-section"><h4>🗒️ 个人笔记</h4><div class="detail-notes">${p.notes}</div></div>`:''}
+    <div class="detail-section" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      ${p.link?`<a class="detail-link" href="${p.link}" target="_blank">🔗 论文原文</a>`:''}
+      ${p.code?`<a class="detail-link" href="${p.code}" target="_blank">💻 代码仓库</a>`:''}
+      ${p.pdf?`<a class="detail-link" href="${p.pdf}" download>⬇ 下载PDF</a>`:''}
+    </div>
+  `;
+
+  // PDF viewer
+  const iframe = document.getElementById('pdf-iframe');
+  const placeholder = document.getElementById('pdf-placeholder');
+  const toolbar = document.getElementById('pdf-toolbar');
+  const fnEl = document.getElementById('pdf-filename');
+  const fbLinks = document.getElementById('pdf-fallback-links');
+
+  currentPdfZoom = 1.0;
+  document.getElementById('pdf-zoom-label').textContent = '100%';
+
+  if (p.pdf) {
+    currentPdfUrl = p.pdf;
+    fnEl.textContent = p.pdf;
+    iframe.style.display = 'block';
+    placeholder.style.display = 'none';
+    iframe.style.opacity = '0';
+    // Use PDF.js CDN viewer for best compatibility
+    iframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(location.origin + '/' + p.pdf)}`;
+    // Fallback: direct embed
+    iframe.onload = () => { iframe.style.opacity = '1'; };
+    iframe.onerror = () => {
+      iframe.src = p.pdf;
+      iframe.style.opacity = '1';
+    };
+    // Try direct embed first (works on same-origin / local server)
+    iframe.src = p.pdf;
+    iframe.style.opacity = '1';
+  } else {
+    currentPdfUrl = null;
+    iframe.style.display = 'none';
+    placeholder.style.display = 'flex';
+    fbLinks.innerHTML = `
+      ${p.link?`<a class="detail-link" href="${p.link}" target="_blank">🔗 打开arXiv</a>`:''}
+      <button class="btn btn-primary" onclick="closeModal('detail-modal');openEdit('${p.id}')" style="font-size:12px;padding:6px 14px">✏️ 添加PDF路径</button>
+    `;
+  }
+
+  openModal('detail-modal');
+}
+
+function jumpToPdf() {
+  document.getElementById('pdf-iframe').scrollIntoView({ behavior: 'smooth' });
+}
+
+function zoomPdf(delta) {
+  currentPdfZoom = Math.min(3, Math.max(0.4, currentPdfZoom + delta));
+  document.getElementById('pdf-zoom-label').textContent = Math.round(currentPdfZoom * 100) + '%';
+  const iframe = document.getElementById('pdf-iframe');
+  // For same-origin iframes, try to scale content; otherwise just show zoom level
+  try {
+    iframe.style.transform = `scale(${currentPdfZoom})`;
+    iframe.style.transformOrigin = 'top left';
+    iframe.style.width = (100 / currentPdfZoom) + '%';
+    iframe.style.height = (100 / currentPdfZoom) + '%';
+  } catch(e) {}
+}
+
+function openPdfNewTab() {
+  if (currentPdfUrl) window.open(currentPdfUrl, '_blank');
+}
+
+function editCurrentPaper() {
+  closeModal('detail-modal');
+  setTimeout(() => openEdit(detailPaperId), 100);
+}
+
+// ═══════════════════════════════════════════════════════
+//  THOUGHT CRUD
+// ═══════════════════════════════════════════════════════
+function openAddThought() {
+  editingThoughtId = null;
+  document.getElementById('thought-modal-title').textContent = '💡 添加研究思考';
+  document.getElementById('t-type').value = 'idea';
+  document.getElementById('t-title').value = '';
+  document.getElementById('t-body').value = '';
+  document.getElementById('t-status').value = 'active';
+  document.getElementById('t-priority').value = '';
+  document.getElementById('t-papers').value = '';
+  document.getElementById('t-progress').value = '';
+  document.getElementById('t-next').value = '';
+  document.getElementById('t-delete-btn').style.display = 'none';
+  openModal('thought-modal');
+}
+
+function openEditThought(id) {
+  const t = thoughts.find(x=>x.id===id);
+  if (!t) return;
+  editingThoughtId = id;
+  document.getElementById('thought-modal-title').textContent = '✏️ 编辑思考';
+  document.getElementById('t-type').value = t.type||'idea';
+  document.getElementById('t-title').value = t.title||'';
+  document.getElementById('t-body').value = t.body||'';
+  document.getElementById('t-status').value = t.status||'active';
+  document.getElementById('t-priority').value = t.priority||'';
+  document.getElementById('t-papers').value = t.relatedPapers||'';
+  document.getElementById('t-progress').value = t.progress||'';
+  document.getElementById('t-next').value = t.nextAction||'';
+  document.getElementById('t-delete-btn').style.display = 'block';
+  openModal('thought-modal');
+}
+
+function saveThought() {
+  const title = document.getElementById('t-title').value.trim();
+  const body = document.getElementById('t-body').value.trim();
+  if (!title || !body) { toast('请填写标题和内容', 'error'); return; }
+  const data = {
+    type: document.getElementById('t-type').value,
+    title, body,
+    status: document.getElementById('t-status').value,
+    priority: document.getElementById('t-priority').value,
+    relatedPapers: document.getElementById('t-papers').value.trim(),
+    progress: parseInt(document.getElementById('t-progress').value)||0,
+    nextAction: document.getElementById('t-next').value.trim(),
+    date: new Date().toISOString().slice(0,10),
+  };
+  if (editingThoughtId) {
+    const idx = thoughts.findIndex(t=>t.id===editingThoughtId);
+    if (idx !== -1) thoughts[idx] = {...thoughts[idx], ...data};
+    toast('已更新 ✅', 'success');
+  } else {
+    thoughts.unshift({ id: uid(), ...data });
+    toast('已添加 🎉', 'success');
+  }
+  saveData(); renderThoughts(); closeModal('thought-modal');
+}
+
+function deleteCurrentThought() {
+  if (!editingThoughtId) return;
+  if (!confirm('确认删除这条思考？')) return;
+  deleteThought(editingThoughtId);
+  closeModal('thought-modal');
+}
+
+function deleteThought(id) {
+  thoughts = thoughts.filter(t=>t.id!==id);
+  saveData(); renderThoughts();
+  toast('已删除', '');
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONTEXT MENU
+// ═══════════════════════════════════════════════════════
+function showCtx(e, id) {
+  e.preventDefault();
+  ctxPaperId = id;
+  const menu = document.getElementById('ctx-menu');
+  menu.style.left = Math.min(e.clientX, innerWidth-180) + 'px';
+  menu.style.top = Math.min(e.clientY, innerHeight-160) + 'px';
+  menu.classList.add('show');
+}
+
+function ctxAction(action) {
+  document.getElementById('ctx-menu').classList.remove('show');
+  if (!ctxPaperId) return;
+  if (action==='view') openDetail(ctxPaperId);
+  else if (action==='edit') openEdit(ctxPaperId);
+  else if (action==='star') { toggleStar(ctxPaperId); }
+  else if (action==='delete') {
+    if (confirm('确认删除这篇论文吗？')) deletePaper(ctxPaperId);
+  }
+}
+
+document.addEventListener('click', () => document.getElementById('ctx-menu').classList.remove('show'));
+
+// ═══════════════════════════════════════════════════════
+//  MODAL HELPERS
+// ═══════════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(o=>o.classList.remove('open'));
+});
+
+// ═══════════════════════════════════════════════════════
+//  IMPORT / EXPORT
+// ═══════════════════════════════════════════════════════
+function exportData() {
+  const data = JSON.stringify({ papers, thoughts }, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'research_hub_backup.json';
+  a.click();
+  toast('数据已导出 💾', 'success');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.papers) { papers = data.papers; }
+      if (data.thoughts) { thoughts = data.thoughts; }
+      saveData(); render();
+      toast(`已导入 ${papers.length} 篇论文 ✅`, 'success');
+    } catch { toast('文件格式错误', 'error'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg, type) {
+  const el = document.createElement('div');
+  el.className = `toast ${type||''}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => {
+    el.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
+}
+
+// ═══════════════════════════════════════════════════════
+//  SCROLL EFFECT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('topbar').classList.toggle('scrolled', window.scrollY > 0);
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100)||0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ═══════════════════════════════════════════════════════
+//  KEYBOARD SHORTCUT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey) && e.key==='k') {
+    e.preventDefault(); document.getElementById('search-input').focus();
+  }
+  if ((e.ctrlKey||e.metaKey) && e.key==='n') {
+    e.preventDefault(); openAddModal();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+(async () => {
+  await loadData();
+  render();
+})();
+</script>
+</body>
+</html>
